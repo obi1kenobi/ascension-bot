@@ -1,0 +1,27 @@
+Discard %d cards
+Draw %d cards
+Gain %d runes
+Gain %d honor
+Gain %d power
+Banish %d card in hand
+Banish %d card in center
+Banish %d card from discard pile
+Defeat monster of %d power or less without cost
+Pay %d less runes when acquiring a mehchana construct this turn
+Acquire a hero with cost %d or less without cost. Place it on top of your deck
+First time you play a lifebound hero, gain %d honor
+Draw %d card when putting a Mechana Construct into play
+Banish this card to take an additional turn
+Pay %d less runes when acquiring a construct this turn
+First time you defeat a monster, gain %d honor
+Draw a card if you control 2 or more constructs
+Gain %d honor for each faction among Constructs you control
+Each opponent must destroy a construct
+Once per turn, when you acquire another Mechana Construct, put it directly into play
+Treat all constructs as mechana constructs
+Take a card at random from each opponent's hand and add that to your hand
+If you have played another lifebound hero, gain %d power
+Each opponent destroys all but one construct
+Gain %d power for each Mechana Construct in play that you control
+Copy the effect of a Hero
+Unbanishable. Acquire or defeat any card in the center without paying its cost.
