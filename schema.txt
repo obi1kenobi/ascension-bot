@@ -1,42 +1,43 @@
-/game-id/
-  current turn: id | -1
-  error: ""
-  turn ended: false | true
-  victor: id
+/games/
+  /game-id/
+    current turn: id | -1
+    error: ""
+    turn ended: false | true
+    victor: id
 
-  board/
-    void/
-      <card name: 1>
-    center/
-      <card name: 1>
-    Mystics: <number of mystics left>
-    Heavy Infantry: <number of heavy infantry left>
-    Cultist: 1
-  players/
-    id1/
-      hand/  -- private to player
-        <card name: 1>
-      discard/
-        <card name: 1>
-      constructs/
-        <card name: 1>
-      moves/
-        1/
-          type: "acquire" | "defeat" | "play"
-          card: card name
-          acknowledged: accepted | rejected
-      honor: value
-    id2/
-      ...
+    board/
+      void/
+        <card name: count of card>
+      center/
+        <card name: count of card>
+      mystics: <number of mystics left>
+      heavy: <number of heavy infantry left>
+      cultist: 1
+    players/
+      id1/
+        hand/  -- private to player
+          <card name: count of card>
+        discard/
+          <card name: count of card>
+        constructs/
+          <card name: count of card>
+        moves/
+          1/
+            turn_index: <turn index>
+            type: "acquire" | "defeat" | "play"
+            card: card name
+            acknowledged: accepted | rejected
+        honor: value
+      id2/
+        ...
 
 
 Usage:
 
-The server first creates the node under a game id and insert an empty players/
-node. The clients connect to this game id and add themselves as nodes under
-players. Once the server sees two players, it creates the board node and
-initializes the players' data. Finally, it sets the current turn to the first
-player to move.
+The server first creates the node under a game id. The clients connect to this
+game id and add themselves as nodes under players. Once the server sees two
+players, it creates the board node and initializes the players' data. Finally,
+it sets the current turn to the first player to move.
 
 A player starts his turn by setting turn ended to false. Players move by
 inserting nodes into their own moves/ node. Initially, a player adds the
@@ -55,7 +56,6 @@ game is not over yet). If so, it sets the current turn to the other player.
 Otherwise, it sets the current turn to -1 and sets the victor node to be the
 id of the winner.
 
-The board's void and center nodes are lists of cards. (The value is 1 because
-Firebase only accepts key-value pairs.) The Mystics node is the number of
-Mystics left in the game (as with Heavy and the Cultist).
+The board's void and center nodes are lists of cards. The Mystics node is the
+number of Mystics left in the game (as with Heavy and the Cultist).
 
