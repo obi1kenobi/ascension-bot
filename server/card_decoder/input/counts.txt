@@ -1,0 +1,53 @@
+Arha Initiate:3
+Temple Librarian:3
+Arha Templar:2
+Seer of the Forked Path:3
+Ascetic of the Lidless Eye:2
+Twofold Askara:1
+The All-Seeing Eye:1
+Tablet of Time's Dawn:1
+Master Dhartha:1
+Oziah the Peerless:1
+Burrower Mark II:2
+Rocket Courier X-99:2
+Avatar Golem:2
+Watchmaker's Altar:2
+Reactor Monk:2
+Mechana Initiate:3
+The Grand Design:2
+Kor, the Ferromancer:1
+Hedron Link Device:1
+Hedron Cannon:1
+Void Initiate:3
+Shadow Star:2
+Voidthirster:2
+Spike Vixen:2
+Shade of the Black Watch:3
+Demon Slayer:2
+Muramasa:1
+Arbiter of the Precipice:2
+Emri, One with the Void:1
+Lifebound Initiate:3
+Snapdragon:2
+Wolf Shaman:3
+Druids of the Stone Circle:2
+Flytrap Witch:2
+Runic Lycanthrope:2
+Cetra, Weaver of the Stars:1
+Landtalker:1
+Yggdrasil Staff:2
+Mephit:3
+Tormented Soul:3
+Mistake of Creation:4
+Xeron, Duke of Lies:1
+Earth Tyrant:2
+Corrosive Widow:4
+Wind Tyrant:3
+Sea Tyrant:3
+Samael's Trickster:4
+Avatar of the Fallen:1
+Apprentice:0
+Militia:0
+Mystic:0
+Heavy Infantry:0
+Cultist:0
