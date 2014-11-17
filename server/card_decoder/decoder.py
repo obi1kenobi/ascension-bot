@@ -3,10 +3,23 @@
 
   Usage: cards = CardDecoder().decode_cards()
   This automatically reads all of the requisite files.
+
+  read_card_counts() is also useful for creating the initial deck.
 """
 
 import files
 from cards import SimpleEffect, CompoundEffect, Acquirable, Defeatable
+
+"""
+  Read how many of each card belong in the deck.
+
+  Returns a dictionary of card name to count
+"""
+def read_card_counts():
+  lines = files.read_lines('input/counts.txt')
+  splits = [line.split(':') for line in lines]
+
+  return {split[0]: int(split[1]) for split in splits}
 
 
 class CardDecoder(object):

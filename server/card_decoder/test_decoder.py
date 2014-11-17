@@ -1,5 +1,5 @@
 import files
-from decoder import CardDecoder
+from decoder import CardDecoder, read_card_counts
 from cards import SimpleEffect, CompoundEffect, Card, Acquirable, Defeatable
 
 # Effects are referenced by index, so it's very important that the
@@ -109,4 +109,13 @@ def check_card_correct(cards, expected_card):
 
   assert cards_with_name[0] == expected_card, (
     "Expected: %s\nActual: %s" % (str(expected_card), str(cards_with_name[0])))
+
+
+# Asserts that the total number of cards in the initial deck is 100
+def test_correct_number_of_cards():
+  NUM_CARDS = 100
+
+  counts = read_card_counts()
+  actual = sum(counts[card] for card in counts.keys())
+  assert actual == NUM_CARDS, "Expected %d cards, got %d" % (NUM_CARDS, actual)
 

@@ -50,7 +50,6 @@ class Board(object):
     self.deck = Deck.create_center_deck(self.cards)
     self.center = [self.deck.get_next_card() for i in xrange(CENTER_SIZE)]
 
-    print [card.name for card in self.cards]
     self.players = {
       player_id: PlayerState(self.cards) for player_id in player_ids
     }
