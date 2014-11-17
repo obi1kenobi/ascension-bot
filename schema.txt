@@ -1,8 +1,8 @@
 /games/
   /game-id/
-    current turn: id | -1
+    current_turn: value
+    current_player_id: id | -1
     error: ""
-    turn ended: false | true
     victor: id
 
     board/
@@ -13,6 +13,7 @@
       mystics: <number of mystics left>
       heavy: <number of heavy infantry left>
       cultist: 1
+      honor_remaining: value
     players/
       id1/
         hand/  -- private to player
@@ -27,7 +28,10 @@
             type: "acquire" | "defeat" | "play"
             card: card name
             acknowledged: accepted | rejected
+        runes_remaining: value
+        power_remaining: value
         honor: value
+        turn_ended: false | true
       id2/
         ...
 
@@ -37,25 +41,28 @@ Usage:
 The server first creates the node under a game id. The clients connect to this
 game id and add themselves as nodes under players. Once the server sees two
 players, it creates the board node and initializes the players' data. Finally,
-it sets the current turn to the first player to move.
+it sets current_player_id to the first player to move and current_turn to 1.
 
-A player starts his turn by setting turn ended to false. Players move by
-inserting nodes into their own moves/ node. Initially, a player adds the
-move type and the associated card. The player should then wait until the
-server sets the acknowledged property. If the server rejects the move, the
-player should not continue playing. The server will mark the move as
+Players move by inserting nodes into their own moves/ node. Initially, a player
+adds the turn index, move type, and the associated card. The player should then
+wait until the server sets the acknowledged property. If the server rejects the
+move, the player should not continue playing. The server will mark the move as
 acknowledged once it has updated all of the state (e.g., board, hand, etc).
 
 A move can be "acquire" or "defeat" if the card is in the center row and the
 player has enough runes or power for it. A move can also be "play" if the player
-has the card in his hand. Once the player is done making moves, he sets the
-turn ended node to true.
+has the card in his hand. Once the player is done making moves, he sets his
+turn_ended node to true.
 
 The server then decides whether the players should keep playing (i.e., if the
-game is not over yet). If so, it sets the current turn to the other player.
-Otherwise, it sets the current turn to -1 and sets the victor node to be the
-id of the winner.
+game is not over yet). If so, it sets current_player_id to the other player and
+marks that player's turn_ended as false.
+Otherwise, it sets current_player_id to -1 and sets the victor node to be the
+id of the winner. TODO: this doesn't show the total honor counts.
 
 The board's void and center nodes are lists of cards. The Mystics node is the
 number of Mystics left in the game (as with Heavy and the Cultist).
+
+Note that the only things a player should modify are his moves and turn_ended.
+Everything else should be modified only by the server.
 
