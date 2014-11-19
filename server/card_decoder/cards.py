@@ -97,6 +97,16 @@ class CompoundEffect(object):
     return optional_str + self.compound_type + '(%s)' % effects_str
 
 
+class CardDictionary(object):
+  def __init__(self, cards):
+    self.cards = cards
+
+  def find_card(self, card_name):
+    cards = [card for card in self.cards if card.name == card_name]
+    assert len(cards) == 1, 'Expected to find one "%s", found %d' % (card_name, len(cards))
+    return cards[0]
+
+
 # This shouldn't ever be instantiated directly. Use Acquirable and Defeatable.
 class Card(object):
   _valid_card_types = [

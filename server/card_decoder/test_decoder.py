@@ -91,23 +91,19 @@ def test_various_cards():
     ])
   ]
 
-  cards = CardDecoder().decode_cards()
-  assert len(cards) == NUM_CARDS
+  card_dictionary = CardDecoder().decode_cards()
+  assert len(card_dictionary.cards) == NUM_CARDS
 
   for card in SELECTED_CARDS:
-    check_card_correct(cards, card)
+    check_card_correct(card_dictionary, card)
 
 
 # Looks up expected_card by name in cards, checks that there is exactly
 # one matching card with that name, and then checks that the two cards
 # are equal.
-def check_card_correct(cards, expected_card):
-  cards_with_name = [card for card in cards if card.name == expected_card.name]
-  assert len(cards_with_name) == 1, (
-    'Card "%s" has %d associated cards; should have 1' % (
-      expected_card.name, len(cards_with_name)))
-
-  assert cards_with_name[0] == expected_card, (
+def check_card_correct(card_dictionary, expected_card):
+  actual_card = card_dictionary.find_card(expected_card.name)
+  assert actual_card == expected_card, (
     "Expected: %s\nActual: %s" % (str(expected_card), str(cards_with_name[0])))
 
 

@@ -11,5 +11,10 @@ if __name__ == '__main__':
   player_ids = firebase_game.wait_for_players()
 
   board = Board(player_ids)
-  print firebase_game.set_board(board)
+  firebase_game.set_board(board)
+
+  while not board.game_over:
+    # Poll for a single turn. The FirebaseGame tells the board that the turn
+    # has ended.
+    firebase_game.poll_moves(board)
 

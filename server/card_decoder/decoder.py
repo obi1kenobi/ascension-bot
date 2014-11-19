@@ -3,12 +3,13 @@
 
   Usage: cards = CardDecoder().decode_cards()
   This automatically reads all of the requisite files.
+  It returns a CardDictionary (see cards.py)
 
   read_card_counts() is also useful for creating the initial deck.
 """
 
 import files
-from cards import SimpleEffect, CompoundEffect, Acquirable, Defeatable
+from cards import SimpleEffect, CompoundEffect, Acquirable, Defeatable, CardDictionary
 
 """
   Read how many of each card belong in the deck.
@@ -26,7 +27,7 @@ class CardDecoder(object):
   def decode_cards(self):
     # We pad with an empty string because the effect indices are one-indexed
     self.effects = [''] + files.read_lines('input/effects.txt')
-    return self._decode_acquirables() + self._decode_defeatables()
+    return CardDictionary(self._decode_acquirables() + self._decode_defeatables())
 
   def _decode_acquirables(self):
     rows = files.parse_csv_file('input/acquirable.csv')
