@@ -9,34 +9,7 @@ from board import Board
 from moves import Move
 import dict_encoder
 
-"""
-  The webserver has three endpoints. /state and /moves both return a JSON-
-  encoded state dictionary. /join returns which player index the requester
-  is (or an error if enough players have already joined).
-
-  POST /join -- join the game
-
-    Only legal if less than two players have joined the game (i.e.,
-    state["player_count"] < 2. This increments the player count, and if the
-    game has reached two players, it initializes the board, inserts that into
-    the state, and sets the status to "playing".
-
-    Return values:
-      {"player_index": <0-based index>}
-        OR
-      {"error": <error string>}
-
-  GET /state -- request the current state
-
-    Simply returns the current state. Players should poll this while either the
-    game hasn't started, or it is not the player's turn.
-
-  POST /moves -- submit moves
-
-    Accepts a JSON dictionary of moves. The server applies each of the moves
-    to the board and then returns the state.
-
-"""
+# For documentation on this, see ../schema.txt
 
 PLAYERS_PER_GAME = 2
 

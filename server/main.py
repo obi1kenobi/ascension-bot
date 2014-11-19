@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python
 
 import string
 import random
