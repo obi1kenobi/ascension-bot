@@ -11,7 +11,7 @@ NUM_HEAVY = 29
 CENTER_SIZE = 6
 
 class Board(object):
-  def __init__(self, player_ids):
+  def __init__(self, num_players):
     self.game_over = False
     self.victor = None
 
@@ -25,20 +25,19 @@ class Board(object):
     self.deck = Deck.create_center_deck(self.card_dictionary)
     self.center = [self.deck.get_next_card() for i in xrange(CENTER_SIZE)]
 
-    self.player_ids = player_ids
-    self.players = {
-      player_id: Player(self.card_dictionary) for player_id in player_ids
-    }
+    self.players = [
+      Player(self.card_dictionary) for i in xrange(num_players)
+    ]
     self.turns = 0
     self.current_player_index = 0
-    self.honor_remaining = HONOR_PER_PLAYER * len(player_ids)
+    self.honor_remaining = HONOR_PER_PLAYER * num_players
 
   def current_player(self):
-    return self.players[self.player_ids[self.current_player_index]]
+    return self.players[self.current_player_index]
 
   def end_turn(self):
     self.current_player().end_turn()
-    self.current_player_index = (self.current_player_index + 1) % len(self.player_ids)
+    self.current_player_index = (self.current_player_index + 1) % len(self.players)
     self.turns += 1
 
   def give_honor(self, player, honor):

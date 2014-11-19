@@ -1,20 +1,25 @@
 #! /usr/bin/python
 
-from board import Board
-from firebase_game import FirebaseGame
+import string
+import random
+import argparse
 
-if __name__ == '__main__':
-  firebase_game = FirebaseGame()
-  game_id = firebase_game.create_game()
-  print "Game Id:", game_id
+from web import WebServer
 
-  player_ids = firebase_game.wait_for_players()
 
-  board = Board(player_ids)
-  firebase_game.set_board(board)
+# returns a string of ID_LENGTH lowercase/numeric digits
+def generate_game_id():
+  ID_LENGTH = 10
+  DIGITS = string.ascii_lowercase + string.digits
 
-  while not board.game_over:
-    # Poll for a single turn. The FirebaseGame tells the board that the turn
-    # has ended.
-    firebase_game.poll_moves(board)
+  return ''.join(random.choice(DIGITS) for i in xrange(ID_LENGTH))
+
+def parse_port():
+  parser = argparse.ArgumentParser(description="Run an Ascension server")
+  parser.add_argument("--port", default="8000", type=int)
+  return parser.parse_args().port
+
+if __name__ == "__main__":
+  with WebServer(generate_game_id(), parse_port()) as server:
+    server.poll()
 

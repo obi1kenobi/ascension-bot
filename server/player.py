@@ -16,8 +16,8 @@ def create_initial_player_deck(card_dictionary):
 
 class Player(object):
   def __init__(self, card_dictionary):
-    self.runes = 0
-    self.power = 0
+    self.runes_remaining = 0
+    self.power_remaining = 0
     self.honor = 0
 
     self.played_cards = []
@@ -75,8 +75,8 @@ class Player(object):
   # Discard all leftover cards and draw HAND_SIZE new cards (shuffling if need be).
   # Also reset runes and power to 0.
   def end_turn(self):
-    self.runes = 0
-    self.power = 0
+    self.runes_remaining = 0
+    self.power_remaining = 0
 
     self.discard.extend(self.hand)
     self.discard.extend(self.played_cards)
