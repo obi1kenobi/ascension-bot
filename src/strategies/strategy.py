@@ -3,17 +3,25 @@
   plug it into main.py.
 """
 
-VERBOSE = True
+from .. import log
+
+PLAYER_INDEX_TO_COLOR = {
+  0: log.GREEN,
+  1: log.BLUE
+}
+
 
 class Strategy(object):
   def __init__(self, tag, player_index):
-    # TODO(ddoucet): colors for logging
     self.tag = tag
     self.player_index = player_index
 
+    logger_name = "P%d %s" % (player_index, tag)
+    color = PLAYER_INDEX_TO_COLOR[player_index]
+    self.logger = log.create_logger(logger_name, color)
+
   def log(self, msg):
-    if VERBOSE:
-      print "P%d %s: %s" % (self.player_index, self.tag, msg)
+    self.logger.info(msg)
 
   # winner will either be str(index) or "tie"
   def log_end_game(self, winner):
