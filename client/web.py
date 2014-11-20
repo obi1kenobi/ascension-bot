@@ -64,6 +64,15 @@ class AscensionClient(object):
       sleep(AscensionClient.POLL_SLEEP_LENGTH)
       self.state = self.client.request_state()
 
+  def print_end_game(self):
+    victor = self.state["board"]["victor"]
+    if victor == "tie":
+      print "The game tied!"
+    elif victor == self.player_index:
+      print "I won!"
+    else:
+      print "I lost!"
+
   def play(self, play_turn):
     def post_moves(moves):
       return self.client.post_moves(self.player_index, moves)
@@ -74,6 +83,8 @@ class AscensionClient(object):
 
       sleep(AscensionClient.POLL_SLEEP_LENGTH)
       self.state = self.client.request_state()
+
+    self.print_end_game()
 
   def _status_is_not_ready(self, state):
     return state["status"] == "not ready"

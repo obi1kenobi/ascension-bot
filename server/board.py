@@ -41,6 +41,18 @@ class Board(object):
     self.turns += 1
 
     if self.honor_remaining == 0 and self.current_player_index == 0:
+      max_honor = max(player.honor for player in self.players)
+      player_indices_with_max_honor = [
+        i for i in xrange(len(self.players))
+          if self.players[i].honor == max_honor
+      ]
+
+      if len(player_indices_with_max_honor) > 1:
+        self.victor = "tie"
+      else:
+        assert len(player_indices_with_max_honor) == 1
+        self.victor = player_indices_with_max_honor[0]
+
       self.game_over = True
 
   def give_honor(self, player, honor):

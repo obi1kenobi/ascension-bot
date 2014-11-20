@@ -2,8 +2,9 @@
 class Move(object):
   # These parameters should be passed directly from the dictionary.
   # This will parse the turn index and validate the move type
-  def __init__(self, move_type, card_name):
+  def __init__(self, turn, move_type, card_name):
     assert move_type in ["acquire", "defeat", "play", "end_turn"]
+    self.turn = turn
     self.move_type = move_type
     self.card_name = card_name
 
@@ -20,10 +21,11 @@ class Move(object):
     }
     move_type_to_fn[self.move_type](board)
 
-    print "\t\trunes: %d, power: %d, honor: %d" % (
-      board.current_player().runes_remaining,
-      board.current_player().power_remaining,
-      board.current_player().honor)
+    if self.move_type != "end_turn":
+      print "\t\trunes: %d, power: %d, honor: %d" % (
+        board.current_player().runes_remaining,
+        board.current_player().power_remaining,
+        board.current_player().honor)
 
   def end_turn(self, board):
     board.end_turn()

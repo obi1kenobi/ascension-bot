@@ -97,3 +97,6 @@ STATE DICTIONARY
       honor - How much honor the player has acquired so far. Note that this
         does not include honor from cards.
 
+      moves - A list of all moves the player has played, as described above,
+        with the addition of a turn (which turn the move was played).
+

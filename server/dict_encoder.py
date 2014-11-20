@@ -3,11 +3,21 @@
   client.
 """
 
+def encode_move(move):
+  return {
+    "turn": move.turn,
+    "type": move.move_type,
+    "card_name": move.card_name
+  }
+
 def encode_player(player):
   return {
     "hand": [card.name for card in player.hand],
     "discard": [card.name for card in player.discard],
     "constructs": [card.name for card in player.constructs],
+
+    "moves": [encode_move(move) for move in player.moves],
+
     "runes_remaining": player.runes_remaining,
     "power_remaining": player.power_remaining,
     "honor": player.honor
@@ -31,7 +41,7 @@ def encode_board(board):
     ]
   }
 
-  if board.victor:
+  if board.victor is not None:
     board_dict["victor"] = board.victor
 
   return board_dict

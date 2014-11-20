@@ -78,10 +78,11 @@ class MovesHandler(tornado.web.RequestHandler):
     self.state.print_line(msg)
 
     for move_dict in move_dicts:
+      turn = self.state.board.turns
       move_type = move_dict["type"]
       card_name = move_dict["card_name"] if "card_name" in move_dict else ""
 
-      move = Move(move_type, card_name)
+      move = Move(turn, move_type, card_name)
       move.apply_to_board(self.state.board)
 
       self.state.board.current_player().moves.append(move)
