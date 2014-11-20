@@ -40,10 +40,10 @@ class Board(object):
     self.current_player_index = (self.current_player_index + 1) % len(self.players)
     self.turns += 1
 
+    if self.honor_remaining == 0 and self.current_player_index == 0:
+      self.game_over = True
+
   def give_honor(self, player, honor):
     player.honor += honor  # we're allowed to go over the honor_remaining
     self.honor_remaining = max(0, self.honor_remaining - honor)
-
-    # TODO(ddoucet): what about finishing the round?
-    self.game_over = self.honor_remaining == 0
 

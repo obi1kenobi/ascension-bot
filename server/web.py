@@ -24,6 +24,9 @@ class State(object):
     self.log_file = None  # gets initialized in WebServer.__enter__
 
   def encode(self):
+    if self.board is not None and self.board.game_over:
+      self.status = "ended"
+
     return dict_encoder.encode_state(self)
 
   def print_line(self, msg):
@@ -72,6 +75,7 @@ class MovesHandler(tornado.web.RequestHandler):
     move_dicts = params["moves"]
 
     msg = "MOVE: player_index: %s; moves: %s" % (player_index, move_dicts)
+    self.state.print_line(msg)
 
     for move_dict in move_dicts:
       move_type = move_dict["type"]
@@ -79,6 +83,8 @@ class MovesHandler(tornado.web.RequestHandler):
 
       move = Move(move_type, card_name)
       move.apply_to_board(self.state.board)
+
+      self.state.board.current_player().moves.append(move)
 
     self.write(self.state.encode())
 
