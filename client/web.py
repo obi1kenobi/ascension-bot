@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
 import requests
+import logging
 from time import sleep
 import json
+import log
 
 class RestClient(object):
   def __init__(self, url=None, port=None):
@@ -54,10 +56,14 @@ class AscensionClient(object):
   def __init__(self, url=None, port=None):
     self.client = RestClient(url, port)
     self.state = None
+    self.logger = None
 
   def join_game(self):
     self.player_index = self.client.join_game()
-    print "Joined as player", self.player_index
+
+    log.setup_logging(self.player_index)
+    self.logger = logging.getLogger('web.asc')
+    self.logger.info("Joined as player %d", self.player_index, log.extra)
 
     self.state = self.client.request_state()
     while self._status_is_not_ready(self.state):
