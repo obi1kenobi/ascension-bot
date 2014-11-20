@@ -13,6 +13,12 @@ CENTER_SIZE = 6
 class Board(object):
   def __init__(self, num_players):
     self.game_over = False
+
+    # self.victor will be None if the game hasn't completely ended yet. (Note
+    # this is not the same as the game_over flag; game_over means the honor
+    # pool has run out.) Once the game has completely ended (all players have
+    # gotten a chance to play during the last round), call compute_victor(),
+    # which sets victor to either the string of a player index or "tie"
     self.victor = None
 
     self.void = []
@@ -40,22 +46,25 @@ class Board(object):
     self.current_player_index = (self.current_player_index + 1) % len(self.players)
     self.turns += 1
 
-    if self.honor_remaining == 0 and self.current_player_index == 0:
-      max_honor = max(player.honor for player in self.players)
-      player_indices_with_max_honor = [
-        i for i in xrange(len(self.players))
-          if self.players[i].honor == max_honor
-      ]
+  def compute_victor(self):
+    max_honor = max(player.honor for player in self.players)
+    player_indices_with_max_honor = [
+      i for i in xrange(len(self.players))
+        if self.players[i].honor == max_honor
+    ]
 
-      if len(player_indices_with_max_honor) > 1:
-        self.victor = "tie"
-      else:
-        assert len(player_indices_with_max_honor) == 1
-        self.victor = player_indices_with_max_honor[0]
+    if len(player_indices_with_max_honor) > 1:
+      self.victor = "tie"
+    else:
+      assert len(player_indices_with_max_honor) == 1
+      self.victor = str(player_indices_with_max_honor[0])
 
-      self.game_over = True
-
+  # This will mark that the game has ended if there is no more honor but it
+  # won't compute the victor since some players may still need to play.
   def give_honor(self, player, honor):
     player.honor += honor  # we're allowed to go over the honor_remaining
     self.honor_remaining = max(0, self.honor_remaining - honor)
+
+    if self.honor_remaining == 0:
+      self.game_over = True
 

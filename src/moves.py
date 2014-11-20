@@ -1,34 +1,20 @@
-
 class Move(object):
-  # These parameters should be passed directly from the dictionary.
-  # This will parse the turn index and validate the move type
-  def __init__(self, turn, move_type, card_name):
-    assert move_type in ["acquire", "defeat", "play", "end_turn"]
-    self.turn = turn
+  def __init__(self, move_type, card_name):
+    assert move_type in ["acquire", "defeat", "play"]
     self.move_type = move_type
     self.card_name = card_name
 
+  def __str__(self):
+    return "%s %s" % (self.move_type, self.card_name)
+
   # TODO(ddoucet): need to actually do the effects
   def apply_to_board(self, board):
-    print "%d: %s %s" % (
-      board.current_player_index, self.move_type, self.card_name),
-
     move_type_to_fn = {
       'play': self.apply_play,
       'acquire': self.apply_acquire,
       'defeat': self.apply_defeat,
-      'end_turn': self.end_turn
     }
     move_type_to_fn[self.move_type](board)
-
-    if self.move_type != "end_turn":
-      print "\t\trunes: %d, power: %d, honor: %d" % (
-        board.current_player().runes_remaining,
-        board.current_player().power_remaining,
-        board.current_player().honor)
-
-  def end_turn(self, board):
-    board.end_turn()
 
   def apply_play(self, board):
     assert self.move_type == "play"

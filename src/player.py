@@ -1,5 +1,6 @@
 from random import shuffle
 from deck import Deck
+from copy import copy
 
 
 # Number of apprentices and militia in each player's starting deck
@@ -30,6 +31,13 @@ class Player(object):
     self.hand = []
     for i in xrange(HAND_SIZE):
       self.draw_card()
+
+  # This is important to do because this will be used by the player when trying
+  # to decide what cards to play. We need to copy it because playing cards
+  # involves removing them from the hand, and we don't want to get in a weird
+  # state where we're modifying the hand while iterating on it.
+  def get_hand(self):
+    return copy(self.hand)
 
   # This attmepts to draw a card from the deck (putting it into the hand).
   # If there are no cards in the deck:
