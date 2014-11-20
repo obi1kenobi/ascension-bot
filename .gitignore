@@ -14,3 +14,4 @@ hs_err_pid*
 .*swp
 *.pyc
 __pycache__/
+logs/

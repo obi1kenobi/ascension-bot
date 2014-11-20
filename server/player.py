@@ -24,6 +24,8 @@ class Player(object):
     self.discard = []
     self.constructs = []
 
+    self.moves = []
+
     self.deck = create_initial_player_deck(card_dictionary)
     self.hand = []
     for i in xrange(HAND_SIZE):
