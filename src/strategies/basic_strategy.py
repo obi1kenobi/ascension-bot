@@ -14,7 +14,7 @@
 from strategy import Strategy
 from src.moves import Move
 
-TAG = "Basic"
+TAG = "basic"
 
 class BasicStrategy(Strategy):
   def __init__(self, player_index):

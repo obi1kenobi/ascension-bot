@@ -16,12 +16,18 @@ class Strategy(object):
     self.tag = tag
     self.player_index = player_index
 
-    logger_name = "P%d %s" % (player_index, tag)
+    logger_name = "p%d.%s" % (player_index, tag)
     color = PLAYER_INDEX_TO_COLOR[player_index]
-    self.logger = log.create_logger(logger_name, color)
+    self.logger = log.create_logger(logger_name)
+
+    self.logging_extra = {
+      "color_seq": log.color_seq_from_color(color)
+    }
 
   def log(self, msg):
-    self.logger.info(msg)
+    # TODO(ddoucet): we should parametrize the logger name or something
+    # so that we can have things like p0.basic.eval
+    self.logger.info(msg, extra=self.logging_extra)
 
   # winner will either be str(index) or "tie"
   def log_end_game(self, winner):

@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
+import logging
 from src.strategies.basic_strategy import BasicStrategy
 from src.board import Board
+from src import log
 
 NUM_PLAYERS = 2
 
@@ -29,6 +31,8 @@ if __name__ == "__main__":
     BasicStrategy(0),  # player index 0
     BasicStrategy(1)   # player index 1
   ]
+
+  log.initialize_logging(logging.INFO)
 
   victor = play_game(strategies)
   if victor == "tie":
