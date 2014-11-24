@@ -147,7 +147,7 @@ def _acquire_hero(board, param, my_targets, all_targets):
 def _gain_honor_for_lifebound_hero(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
 
-  board.give_honor(board.current_player(), param)
+  board.current_player().honor_for_lifebound_hero += param
 
 def _draw_card_for_mechana_construct(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)

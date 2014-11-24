@@ -78,12 +78,12 @@ class Move(object):
     card = board.card_dictionary.find_card(self.card_name)
     self._activate_effects(board, card.effects)
 
-
   def apply_play(self, board):
     assert self.move_type == "play"
 
     if board.card_dictionary.find_card(self.card_name).card_type == "Lifebound Hero":
-      board.current_player().honor += board.current_player().honor_for_lifebound_hero
+      board.give_honor(board.current_player(),
+        board.current_player().honor_for_lifebound_hero)
       board.current_player().honor_for_lifebound_hero = 0
 
     # play_card raises an exception if the card isn't there
@@ -115,7 +115,8 @@ class Move(object):
     board.current_player().power_remaining -= card.cost
 
     if card.name != "Cultist":
-      board.current_player().honor += board.current_player().honor_for_defeating_monster
+      board.give_honor(board.current_player(),
+        board.current_player().honor_for_defeating_monster)
       board.current_player().honor_for_defeating_monster = 0
 
     self._activate_card_effects(board)

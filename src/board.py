@@ -60,6 +60,11 @@ class Board(object):
         card_name, center_str))
 
     self.center.remove(cards[0])
+
+    # TODO(ddoucet): if this is 0, we should shuffle in the void (except not apprentices)
+    # TODO(ddoucet): go check where banishing happens and throw out the apprentices
+    # and militia and mystics and heavies
+    assert len(self.deck.cards) > 0
     self.center.append(self.deck.get_next_card())
     return cards[0]
 
@@ -88,6 +93,8 @@ class Board(object):
     else:
       assert len(player_indices_with_max_honor) == 1
       self.victor = str(player_indices_with_max_honor[0])
+
+    # TODO(ddoucet): this doesn't take into account the honor that players have in their decks
 
   # This will mark that the game has ended if there is no more honor but it
   # won't compute the victor since some players may still need to play.
