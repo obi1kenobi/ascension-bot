@@ -8,7 +8,7 @@ def test_average_estimator():
     for i in xrange(100):
         est.push(rand_number)
 
-    assert est.estimate() == rand_number
+    assert abs(est.estimate() - rand_number) < 1e-9
 
 def test_weighted_estimator():
     est = WeightedAverageEstimator(random.random())
@@ -17,7 +17,15 @@ def test_weighted_estimator():
     for i in xrange(100):
         est.push(rand_number)
 
-    assert est.estimate() == rand_number
+    assert abs(est.estimate() - rand_number) < 1e-9
+
+
+    est = WeightedAverageEstimator(0.2)
+    est.push(5)
+    est.push(10)
+
+    assert abs(est.estimate() - 6) < 1e-9
+    
 
 def test_linear_fit_estimator():
     est = LinearFitEstimator()
@@ -27,6 +35,7 @@ def test_linear_fit_estimator():
         est.push(rand_number)
 
     assert abs(est.estimate() - rand_number) < 1e-9
+
 
 
     est = LinearFitEstimator()

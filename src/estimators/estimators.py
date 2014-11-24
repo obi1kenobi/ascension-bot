@@ -19,9 +19,15 @@ class WeightedAverageEstimator(object):
   def __init__(self, coeff):
     self.coeff = coeff
     self.previous = 0.0
+    self.called = False
 
   def push(self, value):
-    self.previous = (self.previous * (1-self.coeff)) + (self.coeff * value)
+    if not self.called:
+        self.previous = value
+        self.called = True
+    else: 
+        self.previous = (self.previous * (1-self.coeff)) + (self.coeff * value)
+
     return self.estimate()
 
   def estimate(self):
