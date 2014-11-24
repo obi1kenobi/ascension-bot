@@ -1,0 +1,21 @@
+Core idea: two phases
+  1. strategy selection phase (early game)
+  2. strategy phase (mid and late game)
+
+Each card (acquirable/defeatable) has nstrategies+1 values (one generic value, one value per strategy).
+
+In 1., each card has a preset value (loaded from csv). Players buy/defeat cards to maximize value, and then calculate per-strategy total values.
+
+Transition from 1. to 2. happens after some constant number of turns (e.g. 3). On transition, you pick the strategy that has a highest total corresponding value.
+
+In 2., the player sticks with the chosen strategy, evaluating each successive purchase & monster, choosing to maximize total (flat-honor-received + (expected honor-per-turn * remaining-turns)).
+
+Metrics to track:
+- eff-deck-size = Effective deck size at steady state (not including constructs, not including "draw card" cards)
+- real-deck-size = (Weighted average estimator) Actual weighted average deck size over duration of game
+- eff-hand-size = Effective hand size at steady state (with construct effects)
+- real-hand-size = (Average estimator) Actual average hand size over the last deck cycle
+- eff-deck-cycle-length = effective # of turns until you cycle through entire deck
+                        = eff-deck-size / eff-hand-size
+- honor-remaining = Remaining amount of honor in the game honor pool
+- turns-remaining = (Linear estimator) Feed in honor gained per turn and honor remaining, outputs expected turns remaining
