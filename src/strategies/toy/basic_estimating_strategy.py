@@ -18,6 +18,10 @@ from collections import defaultdict
 
 TAG = "basic_estimating"
 
+GAIN_RUNES_EFFECT = 3
+GAIN_HONOR_EFFECT = 4
+GAIN_POWER_EFFECT = 5
+
 class BasicEstimatingStrategy(Strategy):
   def __init__(self, player_index):
     super(BasicEstimatingStrategy, self).__init__(TAG, player_index)
@@ -36,15 +40,17 @@ class BasicEstimatingStrategy(Strategy):
     player = board.current_player()
     hand = player.get_hand()
 
+    targets = {GAIN_RUNES_EFFECT: [], GAIN_HONOR_EFFECT: [], GAIN_POWER_EFFECT: []}
+
     for card in hand:
-      self.play_move(board, Move("play", card.name))
+      self.play_move(board, Move("play", card.name, targets))
 
     runes = player.runes_remaining
     power = player.power_remaining
     self.log("Runes: %d, Power: %d" % (runes, power))
 
-    moves = ([Move("acquire", "Heavy Infantry")] * (runes / 2) +
-      [Move("defeat", "Cultist")] * (power / 2))
+    moves = ([Move("acquire", "Heavy Infantry", None)] * (runes / 2) +
+      [Move("defeat", "Cultist", {GAIN_HONOR_EFFECT: []})] * (power / 2))
 
     self.metrics['eff-deck-size'] += runes / 2
 
@@ -73,7 +79,7 @@ class BasicEstimatingStrategy(Strategy):
         # TODO(predrag): in late-game, honor-per-turn estimator overestimates
         #                consider making linear estimate based on last X turns
 
-  def play_turn(self, board):
+  def play_turn(self, board, opponents_previous_moves):
     self._execute_turn(board)
     self._update_estimates(board)
 
