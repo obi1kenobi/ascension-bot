@@ -11,7 +11,7 @@ NUM_HEAVY = 29
 CENTER_SIZE = 6
 
 class Board(object):
-  def __init__(self, num_players):
+  def __init__(self, num_players, strategies):
     self.game_over = False
 
     # self.victor will be None if the game hasn't completely ended yet. (Note
@@ -34,16 +34,46 @@ class Board(object):
     self.players = [
       Player(self.card_dictionary) for i in xrange(num_players)
     ]
+    self.moves_played_this_turn = []
+    self.strategies = strategies
     self.turns = 0
     self.current_player_index = 0
     self.honor_remaining = HONOR_PER_PLAYER * num_players
+
+  # Returns the card that it removed. Raises an exception if the card isn't there
+  def remove_card_from_center(self, card_name):
+    # First check for mystic, heavy, or cultist
+    if card_name == "Cultist":
+      return self.card_dictionary.find_card(card_name)
+    elif card_name == "Mystic":
+      self.mystics -= 1
+      return self.card_dictionary.find_card(card_name)
+    elif card_name == "Heavy Infantry":
+      self.heavy -= 1
+      return self.card_dictionary.find_card(card_name)
+
+    cards = [card for card in self.center if card.name == card_name]
+
+    if len(cards) == 0:
+      center_str = ', '.join(card.name for card in self.center)
+      raise Exception("Tried to remove %s from center (%s)" % (
+        card_name, center_str))
+
+    self.center.remove(cards[0])
+    self.center.append(self.deck.get_next_card())
+    return cards[0]
 
   def current_player(self):
     return self.players[self.current_player_index]
 
   def end_turn(self):
     self.current_player().end_turn()
-    self.current_player_index = (self.current_player_index + 1) % len(self.players)
+
+    if not self.current_player().should_take_additional_turn:
+      self.current_player_index = (self.current_player_index + 1) % len(self.players)
+    else:
+      self.current_player().should_take_additional_turn = False
+
     self.turns += 1
 
   def compute_victor(self):

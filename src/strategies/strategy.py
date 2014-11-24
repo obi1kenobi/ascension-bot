@@ -42,7 +42,7 @@ class Strategy(object):
     self.log(str(move))
     move.apply_to_board(board)
 
-  def play_turn(self, board):
+  def play_turn(self, board, opponents_previous_moves):
     raise NotImplementedError('play_turn')
 
   def choose_construct_for_discard(self, board):

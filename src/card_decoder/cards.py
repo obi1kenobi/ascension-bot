@@ -123,11 +123,12 @@ class Card(object):
   ]
 
   # card_type is, e.g., "Enlightened Hero", "Lifebound Construct", or "Monster"
-  def __init__(self, name, cost, card_type, effects):
+  def __init__(self, name, cost_str, card_type, effects):
     assert card_type in Card._valid_card_types, "\"%s\" not a valid card type" % card_type
 
     self.name = name
-    self.cost = cost
+    self.cost_str = cost_str
+    self.cost = int(cost_str[:-1])
     self.card_type = card_type
     self.effects = effects
 
@@ -152,8 +153,8 @@ class Card(object):
     return ', '.join((self.name, self._cost_str(), self.card_type)) 
 
   def _cost_str(self):
-    cost_type = ' runes' if self.cost[1] == 'R' else ' power'
-    return self.cost[0] + cost_type
+    cost_type = ' runes' if self.cost_str[1] == 'R' else ' power'
+    return str(self.cost_str) + cost_type
 
   def __str__(self):
     effect_str = '\n\t' + '\n\t'.join(str(effect) for effect in self.effects)
