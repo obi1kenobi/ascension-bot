@@ -21,7 +21,7 @@ class Strategy(object):
     self.logger = log.create_logger(logger_name)
 
     self.logging_extra = {
-      "color_seq": log.color_seq_from_color(color)
+      "color_seq": color
     }
 
   def log(self, msg):

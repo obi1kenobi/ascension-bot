@@ -32,9 +32,6 @@ def initialize_logging(log_level):
   root.setLevel(log_level)
   root.addHandler(console_handler)
 
-def color_seq_from_color(color):
-  return COLOR_SEQ % (30 + color)
-
 def create_logger(logger_name):
   logger = logging.getLogger(logger_name)
   logger.setLevel(logging.DEBUG)
