@@ -2,6 +2,7 @@
 
 import logging
 from src.strategies.basic_strategy import BasicStrategy
+from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
 from src.board import Board
 from src import log
 
@@ -28,8 +29,11 @@ def play_game(strategies):
 
 if __name__ == "__main__":
   strategies = [
-    BasicStrategy(0),  # player index 0
-    BasicStrategy(1)   # player index 1
+    # BasicStrategy(0),  # player index 0
+    # BasicStrategy(1)   # player index 1
+
+    BasicEstimatingStrategy(0),
+    BasicEstimatingStrategy(1)
   ]
 
   log.initialize_logging(logging.INFO)
