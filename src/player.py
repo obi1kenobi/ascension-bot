@@ -27,10 +27,23 @@ class Player(object):
 
     self.moves = []
 
+    self.clear_per_turn_state()
+
     self.deck = create_initial_player_deck(card_dictionary)
     self.hand = []
     for i in xrange(HAND_SIZE):
       self.draw_card()
+
+  def clear_per_turn_state(self):
+    # keys in this dictionary should only be at most the number of that card
+    # (keys are card names)
+    self.num_times_construct_activated = {}
+    self.runes_toward_constructs = 0
+    self.runes_toward_mechana_constructs = 0
+    self.honor_for_lifebound_hero = 0
+    self.should_take_additional_turn = False
+    self.honor_for_defeating_monster = 0
+    self.has_played_mechana_construct = False
 
   # This is important to do because this will be used by the player when trying
   # to decide what cards to play. We need to copy it because playing cards
@@ -55,32 +68,88 @@ class Player(object):
 
   # Raises an exception if the card wasn't found. Returns the card
   # that it removed.
-  def _remove_card_from_hand(self, card_name):
-    cards = [card for card in self.hand if card.name == card_name]
+  def _remove_card_from_pile(self, pile_name, pile, card_name):
+    cards = [card for card in pile if card.name == card_name]
     if len(cards) == 0:
-      hand_str = ', '.join(card.name for card in self.hand)
-      raise Exception('Card %s not found in hand (%s)' % (card_name, hand_str))
+      pile_str = ', '.join(card.name for card in pile)
+      raise Exception('Card %s not found in %s (%s)' % (
+        card_name, pile_name, hand_str))
 
-    self.hand.remove(cards[0])
+    pile.remove(cards[0])
     return cards[0]
+
+  def remove_card_from_hand(self, card_name):
+    return self._remove_card_from_pile("hand", self.hand, card_name)
+
+  def remove_card_from_discard(self, card_name):
+    return self._remove_card_from_pile("discard", self.discard, card_name)
+
+  def remove_card_from_constructs(self, card_name):
+    return self._remove_card_from_pile("constructs", self.constructs, card_name)
+
+  def remove_card_from_played_cards(self, card_name):
+    return self._remove_card_from_pile("played cards", self.played_cards, card_name)
 
   def acquire(self, card):
     # Similar to why we don't play cards into the discard (see below)
     self.played_cards.append(card)
+
+  # Raises an exception if there aren't enough runes and credits to pay for it
+  def pay_for_acquired_card(self, card):
+    cost = card.cost
+
+    if self.considers_card_mechana_construct(card):
+      paying = min(self.runes_toward_mechana_constructs, cost)
+      self.runes_toward_mechana_constructs -= paying
+      cost -= paying
+
+    if "Construct" in card.card_type:
+      paying = min(self.runes_toward_constructs, cost)
+      self.runes_toward_constructs -= paying
+      cost -= paying
+
+    self.runes_remaining -= cost
+    assert self.runes_remaining >= 0, "Did not have enough runes to acquire %s" % (
+      card.name)
 
   # Note that the cards don't go immediately into the discard. This would
   # allow certain strategies that cycle through the deck several times
   # in a turn. Instead, we hold the cards until the end of the turn, at
   # which point we add them to the discard pile.
   def play_card(self, card_name):
-    card = self._remove_card_from_hand(card_name)
-    self.played_cards.append(card)
+    card = self.remove_card_from_hand(card_name)
+    if "Construct" in card.card_type:
+      self.constructs.append(card)
+
+      if self.considers_card_mechana_construct(card_name):
+        self.has_played_mechana_construct = True
+    else:
+      self.played_cards.append(card)
+
+  # Doesn't actually perform the effect. Just ensures the player can activate
+  def activate_construct(self, card_name):
+    count_of_construct = sum(1 for card in self.constructs
+      if card.name == card_name)
+
+    assert count_of_construct > 0, ("Player doesn't have %s in play, but tried" +
+      " to activate it" % card_name)
+
+    assert self.num_times_construct_activated[card_name] < count_of_construct, ("Player" +
+      " has already activated %s as many times as he can (%d)" % (
+        card_name, count_of_construct))
 
   # Move a given card to the discard pile. Raises an exception if the card
   # wasn't found.
   def discard_card(self, card_name):
-    card = self._remove_card_from_hand(card_name)
+    card = self.remove_card_from_hand(card_name)
     self.discard.append(card)
+
+  def has_hedron_in_play(self):
+    return any(construct.name == "Hedron Link Device" for construct in self.constructs)
+
+  def considers_card_mechana_construct(self, card):
+    return card.card_type == "Mechana Construct" or (
+      card.card_type == "Construct" and self.has_hedron_in_play())
 
   # Discard all leftover cards and draw HAND_SIZE new cards (shuffling if need be).
   # Also reset runes and power to 0.
@@ -92,6 +161,8 @@ class Player(object):
     self.discard.extend(self.played_cards)
     self.hand = []
     self.played_cards = []
+
+    self.clear_per_turn_state()
 
     for i in xrange(HAND_SIZE):
       self.draw_card()
