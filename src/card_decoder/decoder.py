@@ -38,7 +38,8 @@ class CardDecoder(object):
     name, cost, honor_str, card_type = row[:4]
     honor = int(honor_str)
     effects = self._decode_effects(row[4:])
-    return Acquirable(name, cost, honor, card_type, effects)
+    single = effects[0] if len(effects) == 1 else CompoundEffect('AND', effects, False)
+    return Acquirable(name, cost, honor, card_type, single)
 
   def _decode_defeatables(self):
     rows = files.parse_csv_file('input/defeatable.csv')
@@ -47,7 +48,8 @@ class CardDecoder(object):
   def _row_to_defeatable(self, row):
     name, cost, card_type = row[:3]
     effects = self._decode_effects(row[3:])
-    return Defeatable(name, cost, card_type, effects)
+    single = effects[0] if len(effects) == 1 else CompoundEffect('AND', effects, False)
+    return Defeatable(name, cost, card_type, single)
 
   # Return (function, args, is_optional) from something of the form
   # function(args)? or function(args)
@@ -91,7 +93,6 @@ class CardDecoder(object):
   # not for parsing the strings in effects.txt
   def _decode_effects(self, effect_strs):
     return [self._decode_compound_effect(effect_str) for effect_str in effect_strs]
-
 
 if __name__ == '__main__':
   print '\n'.join(str(card) for card in CardDecoder().decode_cards())

@@ -49,6 +49,9 @@ so you'll probably break a lot of things."""
 def fetch_simple_effect(effects, effect_index, param, is_optional):
   return SimpleEffect(effect_index, effects[effect_index], param, is_optional)
 
+def compound(effect_list):
+  return effect_list[0] if len(effect_list) == 1 else CompoundEffect('AND', effect_list, False)
+
 
 # Picks a few cards and tests that their values are what we expect.
 # Also tests that we have the correct number of cards.
@@ -57,39 +60,39 @@ def test_various_cards():
   NUM_CARDS = 53
   SELECTED_CARDS = [
     # Simple tests
-    Acquirable("Apprentice", "0R", 0, "Hero", [
+    Acquirable("Apprentice", "0R", 0, "Hero", compound([
       fetch_simple_effect(effects, 3, 1, False)
-    ]),
-    Acquirable("Hedron Link Device", "7R", 7, "Mechana Construct", [
+    ])),
+    Acquirable("Hedron Link Device", "7R", 7, "Mechana Construct", compound([
       fetch_simple_effect(effects, 21, None, False)
-    ]),
+    ])),
 
     # Test multiple effects
-    Acquirable("Arbiter of the Precipice", "4R", 1, "Void Hero", [
+    Acquirable("Arbiter of the Precipice", "4R", 1, "Void Hero", compound([
       fetch_simple_effect(effects, 2, 2, False),
       fetch_simple_effect(effects, 6, 1, False)
-    ]),
+    ])),
 
     # Test optional effects
-    Acquirable("Seer of the Forked Path", "2R", 1, "Enlightened Hero", [
+    Acquirable("Seer of the Forked Path", "2R", 1, "Enlightened Hero", compound([
       fetch_simple_effect(effects, 2, 1, False),
       fetch_simple_effect(effects, 7, 1, True)
-    ]),
+    ])),
 
     # Test compound effects (and construct)
-    Acquirable("Yggdrasil Staff", "4R", 2, "Lifebound Construct", [
+    Acquirable("Yggdrasil Staff", "4R", 2, "Lifebound Construct", compound([
       fetch_simple_effect(effects, 5, 1, False),
       CompoundEffect("AND", [
         fetch_simple_effect(effects, 3, -4, False),
         fetch_simple_effect(effects, 4, 3, False)
       ], True)
-    ]),
+    ])),
 
     # Test defeatable (and with comma in name)
-    Defeatable("Xeron, Duke of Lies", "6P", "Monster", [
+    Defeatable("Xeron, Duke of Lies", "6P", "Monster", compound([
       fetch_simple_effect(effects, 4, 3, False),
       fetch_simple_effect(effects, 22, None, False)
-    ])
+    ]))
   ]
 
   card_dictionary = CardDecoder().decode_cards()

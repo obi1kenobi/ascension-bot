@@ -3,6 +3,10 @@
   These come from input/effects.txt.
 """
 
+def _flatten(L):
+  return [x for sublist in L for x in sublist]
+
+
 class SimpleEffect(object):
   """
     effect_index: Which index in the file this effect refers to.
@@ -94,15 +98,43 @@ class CompoundEffect(object):
 
     return sets
 
-  def _generate_and_legal_effect_sets(self):
-    assert self.compound_type == "AND"
-
-    return [self.effects]
-
   def _generate_or_legal_effect_sets(self):
     assert self.compound_type == "OR"
 
-    return [[effect] for effect in self.effects]
+    return _flatten([effect.generate_legal_effect_sets() for effect in self.effects])
+
+  def _generate_and_legal_effect_sets(self):
+    assert self.compound_type == "AND"
+
+    # choices is now a list of list of lists. The outer level is one for each
+    # effect that it has. The next level is the list of legal sets for that
+    # specific child.
+    choices = [effect.generate_legal_effect_sets() for effect in self.effects]
+
+    return self._generate_cartesian_product(choices)
+
+  # We want to find the cartesian product of the elements in choices.
+  # current_set is going to be a list of lists for easy clean up between
+  # depths.
+  def _generate_cartesian_product(self, choices):
+    legal_sets = []
+
+    def find_cartesian_product(current_set, index):
+      if index == len(choices):
+        legal_sets.append(_flatten(current_set))
+        return
+
+      # Try each possibility in choices[index]. Note that choices[index] is a
+      # 2d list. The outer level is all legal sets for that effect, and the
+      # inner level is a list of effects (e.g., the AND clause)
+      for choice in choices[index]:
+        current_set.append(choice)
+        find_cartesian_product(current_set, index + 1)
+        current_set.pop()
+
+    find_cartesian_product([], 0)
+
+    return legal_sets
 
   def __eq__(self, other):
     if not isinstance(other, CompoundEffect):

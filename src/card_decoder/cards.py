@@ -4,8 +4,8 @@
   respectively.
 """
 
-def _flatten(L):
-  return [x for sublist in L for x in sublist]
+from effects import SimpleEffect, CompoundEffect
+
 
 class CardDictionary(object):
   def __init__(self, cards):
@@ -72,14 +72,16 @@ class Card(object):
   }
 
   # card_type is, e.g., "Enlightened Hero", "Lifebound Construct", or "Monster"
-  def __init__(self, name, cost_str, card_type, effects):
+  # effect is either a SingleEffect or a CompoundEffect
+  def __init__(self, name, cost_str, card_type, effect):
     assert card_type in Card._valid_card_types, "\"%s\" not a valid card type" % card_type
+    assert isinstance(effect, SimpleEffect) or isinstance(effect, CompoundEffect), "Damon fucked up"
 
     self.name = name
     self.cost_str = cost_str
     self.cost = int(cost_str[:-1])
     self.card_type = card_type
-    self.effects = effects
+    self.effect = effect
 
   def is_hero(self):
     return self.card_type in Card._hero_types
@@ -129,38 +131,12 @@ class Card(object):
 
   # Returns whether it's possible for a given effect to come from this card.
   def can_use_effect(self, effect_index):
-    return any(effect.contains_effect_index(effect_index)
-      for effect in self.effects)
+    return self.effect.contains_effect_index(effect_index)
 
   # Returns a list of effect lists. Each effect list represents one legal choice
   # of effects.
   def generate_legal_effect_sets(self):
-    # choices is now a list of list of lists. The outer level is one for each
-    # effect that it has. The next level is the list of legal sets for that
-    # specific child.
-    choices = [effect.generate_legal_effect_sets() for effect in self.effects]
-
-    legal_sets = []
-
-    # We want to find the cartesian product of the elements in choices.
-    # current_set is going to be a list of lists for easy clean up between
-    # depths.
-    def find_cartesian_product(current_set, index):
-      if index == len(choices):
-        legal_sets.append(_flatten(current_set))
-        return
-
-      # Try each possibility in choices[index]. Note that choices[index] is a
-      # 2d list. The outer level is all legal sets for that effect, and the
-      # inner level is a list of effects (e.g., the AND clause)
-      for choice in choices[index]:
-        current_set.append(choice)
-        find_cartesian_product(current_set, index + 1)
-        current_set.pop()
-
-    find_cartesian_product([], 0)
-
-    return legal_sets
+    return self.effect.generate_legal_effect_sets()
 
   def __eq__(self, other):
     if not isinstance(other, Card):
@@ -169,7 +145,7 @@ class Card(object):
     return (self.name == other.name and
       self.cost == other.cost and
       self.card_type == other.card_type and
-      self.effects == other.effects)
+      self.effect == other.effect)
 
   def __ne__(self, other):
     res = self == other
@@ -196,8 +172,8 @@ class Card(object):
 # Constructs and Heros. These params are in the order that they appear
 # in the csv file.
 class Acquirable(Card):
-  def __init__(self, name, cost, honor, card_type, effects):
-    super(Acquirable, self).__init__(name, cost, card_type, effects)
+  def __init__(self, name, cost, honor, card_type, effect):
+    super(Acquirable, self).__init__(name, cost, card_type, effect)
     assert isinstance(honor, int)
     self.honor = honor
 
@@ -213,6 +189,6 @@ class Acquirable(Card):
 # This is just a wrapper class around Card to make things a little cleaner
 # The params are in the order that they appear in the csv file
 class Defeatable(Card):
-  def __init__(self, name, cost, card_type, effects):
-    super(Defeatable, self).__init__(name, cost, card_type, effects)
+  def __init__(self, name, cost, card_type, effect):
+    super(Defeatable, self).__init__(name, cost, card_type, effect)
 

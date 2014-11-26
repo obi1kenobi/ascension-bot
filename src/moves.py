@@ -60,23 +60,22 @@ class Move(object):
     }
     move_type_to_fn[self.move_type](board)
 
-  def _activate_effects(self, board, effects):
-    for effect in effects:
-      # yuck
-      if isinstance(effect, SimpleEffect):
-        apply_simple_effect(board, effect, self.targets)
-      else:  # compound effect
-        effects_with_targets = [e for e in effect.effects if e.effect_index in targets]
-        if effect.compound_type == "AND":
-          assert len(effects_with_targets) == len(effect.effects)
-          self._activate_effects(board, [effects_with_targets])
-        else:
-          assert len(effects_with_targets) == 1
-          self._activate_effects(board, [effects_with_targets[0]])
+  def _activate_effects(self, board, effect):
+    # yuck
+    if isinstance(effect, SimpleEffect):
+      apply_simple_effect(board, effect, self.targets)
+    else:  # compound effect
+      effects_with_targets = [e for e in effect.effects if e.effect_index in targets]
+      if effect.compound_type == "AND":
+        assert len(effects_with_targets) == len(effect.effects)
+        self._activate_effects(board, [effects_with_targets])
+      else:
+        assert len(effects_with_targets) == 1
+        self._activate_effects(board, [effects_with_targets[0]])
 
   def _activate_card_effects(self, board):
     card = board.card_dictionary.find_card(self.card_name)
-    self._activate_effects(board, card.effects)
+    self._activate_effects(board, card.effect)
 
   def apply_play(self, board):
     assert self.move_type == "play"
