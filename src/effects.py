@@ -37,7 +37,7 @@ def apply_simple_effect(board, effect, targets):
     20: _put_acquired_mechana_construct_into_play,
     21: _treat_all_constructs_as_mechana_constructs,
     22: _take_random_card_from_each_opponent,
-    23: _gain_honor_if_lifebound_hero_played,
+    23: _gain_power_if_lifebound_hero_played,
     24: _opponents_destroy_all_but_one_construct,
     25: _gain_power_for_each_mechana_construct,
     26: _copy_hero,
@@ -230,12 +230,12 @@ def _take_random_card_from_each_opponent(board, param, my_targets, all_targets):
 
     board.current_player.hand.append(card)
 
-def _gain_honor_if_lifebound_hero_played(board, param, my_targets, all_targets):
+def _gain_power_if_lifebound_hero_played(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
 
   if any(card.card_type == "Lifebound Hero"
       for card in board.current_player().played_cards):
-    board.give_honor(board.current_player(), param)
+    board.current_player().power_remaining += param
 
 def _opponents_destroy_all_but_one_construct(board, param, my_targets, all_targets):
   opponent_indices = _get_opponent_indices(board)
