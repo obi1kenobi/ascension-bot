@@ -9,7 +9,8 @@
 """
 
 import files
-from cards import SimpleEffect, CompoundEffect, Acquirable, Defeatable, CardDictionary
+from cards import Acquirable, Defeatable, CardDictionary
+from effects import SimpleEffect, CompoundEffect
 
 """
   Read how many of each card belong in the deck.

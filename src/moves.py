@@ -32,7 +32,7 @@
 """
 
 from effects import apply_simple_effect
-from card_decoder.cards import SimpleEffect
+from card_decoder.effects import SimpleEffect
 
 class Move(object):
   def __init__(self, move_type, card_name, targets):

@@ -1,6 +1,7 @@
 import files
 from decoder import CardDecoder, read_card_counts
-from cards import SimpleEffect, CompoundEffect, Card, Acquirable, Defeatable
+from cards import Card, Acquirable, Defeatable
+from effects import SimpleEffect, CompoundEffect
 
 # Effects are referenced by index, so it's very important that the
 # data file not be reordered. This tests that the effects are in
