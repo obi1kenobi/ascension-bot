@@ -76,13 +76,12 @@ class MetricTracker(object):
       # constructs don't increase the effective deck size
       eff_deck_size_increase = 0
     elif card.is_hero():
-      pass
-      # if card.effects.contains_effect_index(DRAW_CARDS_EFFECT):
-      #   chain = itertools.chain.from_iterable(card.effects.generate_legal_effect_sets())
-      #   max_draws = max([x.param for x in chain if x.effect_index == DRAW_CARDS_EFFECT])
-      #   eff_deck_size_increase -= max_draws
-      # # TODO(predrag): Update effective deck size for conditional 'draw card' effect cards
-      # # e.g. draw if two constructs in play etc.
+      if card.effect.contains_effect_index(DRAW_CARDS_EFFECT):
+        chain = itertools.chain.from_iterable(card.effect.generate_legal_effect_sets())
+        max_draws = max([x.param for x in chain if x.effect_index == DRAW_CARDS_EFFECT])
+        eff_deck_size_increase -= max_draws
+      # TODO(predrag): Update effective deck size for conditional 'draw card' effect cards
+      # e.g. draw if two constructs in play etc.
     else:
       # can't buy non-construct, non-hero cards
       print card

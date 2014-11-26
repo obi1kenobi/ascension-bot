@@ -80,6 +80,9 @@ class LinearFitEstimator(object):
   def estimate_turns_to_sum(self, s):
     # finds the number of new push/estimate turns it will take to produce a sum equal to s
     # assuming pushed values follow the estimated model.
+    if s == 0:
+      return 0.0
+
     if self.m == 0:
       return None
 
@@ -118,4 +121,4 @@ class LimitedHorizonLinearFitEstimator(LinearFitEstimator):
   def push(self, value):
     if len(self.history) >= self.horizon:
       self.history.pop(0)
-    super(LimitedHorizonLinearFitEstimator, self).push(value)
+    return super(LimitedHorizonLinearFitEstimator, self).push(value)
