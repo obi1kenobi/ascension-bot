@@ -13,7 +13,7 @@
 
 from ..strategy import Strategy
 from src.moves import Move
-from src.estimators.estimators import AverageEstimator, WeightedAverageEstimator, LinearFitEstimator
+from src.estimators.estimators import AverageEstimator, WeightedAverageEstimator, LimitedHorizonLinearFitEstimator
 from collections import defaultdict
 
 TAG = "basic_estimating"
@@ -29,10 +29,38 @@ class BasicEstimatingStrategy(Strategy):
     self.metrics['eff-deck-size'] = 10.0
     self.metrics['eff-hand-size'] = 5.0
     self.estimators = {
-      'turns-remaining': LinearFitEstimator(),
+      'turns-remaining': LimitedHorizonLinearFitEstimator(10),
       'real-deck-size': WeightedAverageEstimator(0.8),
       'real-hand-size': AverageEstimator()
     }
+
+  def _update_deck_size(self, card):
+    eff_deck_size_increase = 1
+    construct_types = {'Enlightened Construct', 'Void Construct', 'Mechana Construct', 'Lifebound Construct'}
+
+    if card.card_type in construct_types:
+      # constructs don't increase the effective deck size
+      eff_deck_size_increase -= 1
+
+    # TODO(predrag): Update effective deck size for 'draw card' effect cards
+
+    # All-Seeing Eye's effect affects the hand size but not the deck size
+    # to avoid double-counting
+
+    self.metrics['eff-deck-size'] += eff_deck_size_increase
+
+  def _update_hand_size(self, card):
+    eff_hand_size_increase = 0
+
+    # TODO(predrag): Switch to checking effects rather than hard-coding effects
+    if card.name == "The All-Seeing Eye":
+      eff_hand_size_increase += 1
+
+    self.metrics['eff-hand-size'] += eff_hand_size_increase
+
+  def _event_acquired_card(self, card):
+    self._update_deck_size(card)
+    self._update_hand_size(card)
 
   def _execute_turn(self, board):
     assert board.current_player() == board.players[self.player_index]
@@ -61,6 +89,9 @@ class BasicEstimatingStrategy(Strategy):
     for move in moves:
       self.play_move(board, move)
 
+    for i in xrange(runes/2):
+      self._event_acquired_card(board.card_dictionary.find_card("Heavy Infantry"))
+
   def _update_estimates(self, board):
     player = board.current_player()
     hand = player.get_hand()
@@ -76,8 +107,8 @@ class BasicEstimatingStrategy(Strategy):
     if honor_gained_in_last_turn >= 0:
       self.metrics['temp-estimate-next-turn-honor-gained'] = \
         self.estimators['turns-remaining'].push(honor_gained_in_last_turn)
-        # TODO(predrag): in late-game, honor-per-turn estimator overestimates
-        #                consider making linear estimate based on last X turns
+      self.metrics['turns-remaining'] = \
+        self.estimators['turns-remaining'].estimate_turns_to_sum(board.honor_remaining)
 
   def play_turn(self, board, opponents_previous_moves):
     self._execute_turn(board)

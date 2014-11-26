@@ -42,8 +42,8 @@ class SimpleEffect(object):
 
     if self.effect_index == other.effect_index:
       assert self.effect_str == other.effect_str, (
-        """Somehow two effects have the same index but different strings. 
-effect_index: %d. 
+        """Somehow two effects have the same index but different strings.
+effect_index: %d.
 self.effect_str: %s.
 other.effect_str: %s.""" % (self.effect_index, self.effect_str, other.effect_str))
 
@@ -150,7 +150,7 @@ class Card(object):
   # When calling __str__(card), we return this and then a series of lines,
   # one per effect.
   def _title_str(self):
-    return ', '.join((self.name, self._cost_str(), self.card_type)) 
+    return ', '.join((self.name, self._cost_str(), self.card_type))
 
   def _cost_str(self):
     cost_type = ' runes' if self.cost_str[1] == 'R' else ' power'

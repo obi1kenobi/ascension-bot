@@ -61,7 +61,6 @@ class LinearFitEstimator(object):
   # returns a pair of real solutions (x1, x2), or None if there are none
   @staticmethod
   def _solve_quadratic(a, b, c):
-    print "solving (%f)x^2 + (%f)x + (%f) = 0" % (a, b, c)
     if a == 0:
       x = -c/b
       if x < 0:
@@ -75,8 +74,6 @@ class LinearFitEstimator(object):
 
       x1 = (-b + discriminant) / (2*a)
       x2 = (-b - discriminant) / (2*a)
-
-      print "solutions: (%f, %f)" % (x1, x2)
 
       return (x1, x2)
 
