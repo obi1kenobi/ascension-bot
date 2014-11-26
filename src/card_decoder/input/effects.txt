@@ -7,7 +7,7 @@ Banish %d card in hand
 Banish %d card in center
 Banish %d card from discard pile
 Defeat monster of %d power or less without cost
-Pay %d less runes when acquiring a mehchana construct this turn
+Pay %d less runes when acquiring a mechana construct this turn
 Acquire a hero with cost %d or less without cost. Place it on top of your deck
 First time you play a lifebound hero, gain %d honor
 Draw %d card when putting a Mechana Construct into play

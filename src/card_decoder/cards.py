@@ -32,6 +32,45 @@ class Card(object):
     'Monster'
   ]
 
+  _hero_types = {
+    'Hero',  # e.g., Apprentice
+    'Enlightened Hero',
+    'Void Hero',
+    'Mechana Hero',
+    'Lifebound Hero'
+  }
+
+  _construct_types = {
+    'Enlightened Construct',
+    'Void Construct',
+    'Mechana Construct',
+    'Lifebound Construct'
+  }
+
+  _monster_types = {
+    'Monster'
+  }
+
+  _enlightened_types = {
+    'Enlightened Hero',
+    'Enlightened Construct'
+  }
+
+  _void_types = {
+    'Void Hero',
+    'Void Construct'
+  }
+
+  _mechana_types = {
+    'Mechana Hero',
+    'Mechana Construct'
+  }
+
+  _lifebound_types = {
+    'Lifebound Hero',
+    'Lifebound Construct'
+  }
+
   # card_type is, e.g., "Enlightened Hero", "Lifebound Construct", or "Monster"
   def __init__(self, name, cost_str, card_type, effects):
     assert card_type in Card._valid_card_types, "\"%s\" not a valid card type" % card_type
@@ -41,6 +80,52 @@ class Card(object):
     self.cost = int(cost_str[:-1])
     self.card_type = card_type
     self.effects = effects
+
+  def is_hero(self):
+    return self.card_type in Card._hero_types
+
+  def is_construct(self):
+    return self.card_type in Card._construct_types
+
+  def is_monster(self):
+    return self.card_type in Card._monster_types
+
+  def is_enlightened(self):
+    return self.card_type in Card._enlightened_types
+
+  def is_void(self):
+    return self.card_type in Card._void_types
+
+  def is_mechana(self):
+    return self.card_type in Card._mechana_types
+
+  def is_lifebound(self):
+    return self.card_type in Card._lifebound_types
+
+  def is_mystic(self):
+    return self.name == "Mystic"
+
+  def is_heavy(self):
+    return self.name == "Heavy Infantry"
+
+  def is_apprentice(self):
+    return self.name == "Apprentice"
+
+  def is_militia(self):
+    return self.name == "Militia"
+
+  def faction(self):
+    if self.is_lifebound():
+      return 'Lifebound'
+    elif self.is_enlightened():
+      return 'Enlightened'
+    elif self.is_mechana():
+      return 'Mechana'
+    elif self.is_void():
+      return 'Void'
+    else:
+      # apprentice, militia, mystic, heavy infantry, monster
+      return None
 
   # Returns whether it's possible for a given effect to come from this card.
   def can_use_effect(self, effect_index):
