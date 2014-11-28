@@ -22,6 +22,8 @@ def play_game(strategies):
       last_moves = board.moves_played_this_turn
       board.end_turn()
 
+    board.end_round()
+
   board.compute_victor()
 
   for strategy in strategies:

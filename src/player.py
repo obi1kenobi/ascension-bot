@@ -1,7 +1,8 @@
 from random import shuffle
 from deck import Deck
 from copy import copy
-
+from events import raise_strategy_card_events, raise_strategy_deck_events
+from src.strategies.strategy import Strategy
 
 # Number of apprentices and militia in each player's starting deck
 NUM_APPRENTICE = 8
@@ -16,7 +17,9 @@ def create_initial_player_deck(card_dictionary):
   return Deck([apprentice] * NUM_APPRENTICE + [militia] * NUM_MILITIA)
 
 class Player(object):
-  def __init__(self, card_dictionary):
+  def __init__(self, board, strategy, card_dictionary):
+    self.board = board
+    self.strategy = strategy
     self.runes_remaining = 0
     self.power_remaining = 0
     self.honor = 0
@@ -60,6 +63,10 @@ class Player(object):
     if not self.deck.has_cards_left():
       if len(self.discard) == 0:
         return
+
+      raise_strategy_deck_events(self.board,  \
+        Strategy.me_deck_finished,            \
+        Strategy.opponent_deck_finished)
 
       self.deck.shuffle_in_cards(self.discard)
       self.discard = []
@@ -123,6 +130,12 @@ class Player(object):
 
       if self.considers_card_mechana_construct(card_name):
         self.has_played_mechana_construct = True
+
+      raise_strategy_card_events(self.board, \
+        Strategy.me_construct_placed,        \
+        Strategy.opponent_construct_placed,  \
+        card_name)
+
     else:
       self.played_cards.append(card)
 

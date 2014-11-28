@@ -1,6 +1,7 @@
 from card_decoder.decoder import CardDecoder
 from deck import Deck
 from player import Player
+from src.events import raise_end_round_events
 
 
 HONOR_PER_PLAYER = 30
@@ -13,6 +14,8 @@ CENTER_SIZE = 6
 class Board(object):
   def __init__(self, num_players, strategies):
     self.game_over = False
+
+    assert num_players == len(strategies)
 
     # self.victor will be None if the game hasn't completely ended yet. (Note
     # this is not the same as the game_over flag; game_over means the honor
@@ -32,11 +35,12 @@ class Board(object):
     self.center = [self.deck.get_next_card() for i in xrange(CENTER_SIZE)]
 
     self.players = [
-      Player(self, self.card_dictionary) for i in xrange(num_players)
+      Player(self, strategies[i], self.card_dictionary) for i in xrange(num_players)
     ]
     self.moves_played_this_turn = []
     self.strategies = strategies
     self.turns = 0
+    self.rounds = 0
     self.current_player_index = 0
     self.honor_remaining = HONOR_PER_PLAYER * num_players
 
@@ -84,6 +88,10 @@ class Board(object):
 
     self.turns += 1
 
+  def end_round(self):
+    raise_end_round_events(self.strategies)
+    self.rounds += 1
+
   def compute_victor(self):
     max_honor = max(player.honor for player in self.players)
     player_indices_with_max_honor = [
@@ -107,4 +115,3 @@ class Board(object):
 
     if self.honor_remaining == 0:
       self.game_over = True
-

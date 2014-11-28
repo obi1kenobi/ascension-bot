@@ -33,6 +33,8 @@
 
 from effects import apply_simple_effect
 from card_decoder.effects import SimpleEffect
+from events import raise_strategy_card_events
+from src.strategies.strategy import Strategy
 
 class Move(object):
   def __init__(self, move_type, card_name, targets):
@@ -102,6 +104,11 @@ class Move(object):
     board.current_player().pay_for_acquired_card(card)
     board.current_player().acquire(card)
 
+    raise_strategy_card_events(board,   \
+      Strategy.me_acquired_card,        \
+      Strategy.opponent_acquired_card,  \
+      self.card_name)
+
   def apply_defeat(self, board):
     assert self.move_type == "defeat"
 
@@ -119,6 +126,11 @@ class Move(object):
       board.current_player().honor_for_defeating_monster = 0
 
     self._activate_card_effects(board)
+
+    raise_strategy_card_events(board,   \
+      Strategy.me_defeated_card,        \
+      Strategy.opponent_defeated_card,  \
+      self.card_name)
 
   def apply_activate(self, board):
     assert self.move_type == "activate"
