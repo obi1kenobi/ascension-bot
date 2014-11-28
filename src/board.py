@@ -32,7 +32,7 @@ class Board(object):
     self.center = [self.deck.get_next_card() for i in xrange(CENTER_SIZE)]
 
     self.players = [
-      Player(self.card_dictionary) for i in xrange(num_players)
+      Player(self, self.card_dictionary) for i in xrange(num_players)
     ]
     self.moves_played_this_turn = []
     self.strategies = strategies
