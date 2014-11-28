@@ -71,6 +71,9 @@ class Board(object):
   def current_player(self):
     return self.players[self.current_player_index]
 
+  def other_players(self):
+    return [self.players[i] for i in xrange(len(self.players)) if i != self.current_player_index]
+
   def end_turn(self):
     self.current_player().end_turn()
 
