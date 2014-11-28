@@ -182,6 +182,7 @@ class Player(object):
     self.discard.extend(self.acquired_cards)
     self.hand = []
     self.played_cards = []
+    self.acquired_cards = []
 
     self.clear_per_turn_state()
 

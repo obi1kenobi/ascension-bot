@@ -78,7 +78,7 @@ def _gain_honor(board, param, my_targets, all_targets):
 def _gain_power(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
 
-  assert board.current_player().power_remaining + param >= 0, "Not enough power to play this card")
+  assert board.current_player().power_remaining + param >= 0, "Not enough power to play this card"
 
   board.current_player().power_remaining += param
 

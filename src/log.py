@@ -17,10 +17,15 @@ BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = [
 # TODO(ddoucet): how can we take advantage of the hierarchy?
 # e.g., let's say we wanted to turn off all logs from P1...
 
+LOG_LEVEL = None
+
 def initialize_logging(log_level):
+  global LOG_LEVEL
+  LOG_LEVEL = log_level
+
   # create a console handler with our formatting
   console_handler = logging.StreamHandler()
-  console_handler.setLevel(log_level)
+  console_handler.setLevel(LOG_LEVEL)
 
   format_str = ("%(color_seq)s" + BOLD_SEQ +
     "%(asctime)s - %(name)s - %(levelname)s -" + RESET_SEQ + " %(message)s")
@@ -29,11 +34,9 @@ def initialize_logging(log_level):
 
   # grab the root logger and attach the console handler
   root = logging.getLogger()
-  root.setLevel(log_level)
+  root.setLevel(LOG_LEVEL)
   root.addHandler(console_handler)
 
 def create_logger(logger_name):
-  logger = logging.getLogger(logger_name)
-  logger.setLevel(logging.DEBUG)
-  return logger
+  return logging.getLogger(logger_name)
 
