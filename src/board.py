@@ -93,10 +93,10 @@ class Board(object):
     self.rounds += 1
 
   def compute_victor(self):
-    max_honor = max(player.honor for player in self.players)
+    max_honor = max(player.compute_honor() for player in self.players)
     player_indices_with_max_honor = [
       i for i in xrange(len(self.players))
-        if self.players[i].honor == max_honor
+        if self.players[i].compute_honor() == max_honor
     ]
 
     if len(player_indices_with_max_honor) > 1:
@@ -115,3 +115,4 @@ class Board(object):
 
     if self.honor_remaining == 0:
       self.game_over = True
+

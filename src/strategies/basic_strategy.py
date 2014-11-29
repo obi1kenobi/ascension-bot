@@ -45,7 +45,7 @@ class BasicStrategy(Strategy):
     for move in moves:
       self.play_move(board, move)
 
-    self.log("Honor: %d" % player.honor)
+    self.log("Honor: %d (Total Honor: %d)" % (player.honor, player.compute_honor()))
 
   def choose_construct_for_discard(self, board):
     assert len(board.players[self.player_index].constructs) == 0
