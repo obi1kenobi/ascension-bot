@@ -78,7 +78,10 @@ class BasicEstimatingStrategy(Strategy):
   def round_finished(self, board):
     self._update_estimates(board)
     self.log("Estimates: %s" % self.my_tracker.metrics)
-    self.log("Honor: %d" % board.current_player().honor)
+    self.log("Honor: %d cards, %d tokens = %d total" % \
+      (self.my_tracker.metrics['honor-in-cards'], \
+       self.my_tracker.metrics['honor-in-tokens'], \
+       self.my_tracker.metrics['honor-total']))
 
   def _update_estimates(self, board):
     player = board.current_player()

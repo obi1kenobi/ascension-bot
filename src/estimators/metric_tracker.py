@@ -13,7 +13,7 @@ def updatesDerived(f):
 class MetricTracker(object):
   def __init__(self, initial_honor_remaining):
     self.metrics = defaultdict(float)
-    self.metrics['honor-in-cards'] = 0.0   # currently not tracked
+    self.metrics['honor-in-cards'] = 0.0
     self.metrics['honor-in-tokens'] = 0.0
     self.metrics['honor-total'] = 0.0
     self.metrics['honor-remaining'] = float(initial_honor_remaining)  # remaining in tokens
@@ -80,6 +80,8 @@ class MetricTracker(object):
   def _update_owned_card_type_stats(self, card, acquired=True):
     suffix = None
     delta = 1 if acquired else -1
+    self.metrics['honor-in-cards'] += card.honor * delta
+    assert self.metrics['honor-in-cards'] >= 0
     if card.is_construct():
       self.metrics['deck-acquired-constructs'] += delta
       assert self.metrics['deck-acquired-constructs'] >= 0
