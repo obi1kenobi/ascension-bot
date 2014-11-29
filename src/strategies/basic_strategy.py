@@ -21,8 +21,8 @@ GAIN_HONOR_EFFECT = 4
 GAIN_POWER_EFFECT = 5
 
 class BasicStrategy(Strategy):
-  def __init__(self, player_index):
-    super(BasicStrategy, self).__init__(TAG, player_index)
+  def __init__(self, player_index, num_players, card_dictionary):
+    super(BasicStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
 
   def play_turn(self, board, opponents_previous_moves):
     assert board.current_player() == board.players[self.player_index]

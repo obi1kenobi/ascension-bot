@@ -33,8 +33,8 @@ def read_string():
     return s[:len(s) - 1]
 
 class UserStrategy(Strategy):
-  def __init__(self, player_index):
-    super(UserStrategy, self).__init__(TAG, player_index)
+  def __init__(self, player_index, num_players, card_dictionary):
+    super(UserStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
 
   def play_card(self, cards_not_played):
     targets = {GAIN_RUNES_EFFECT: [], GAIN_HONOR_EFFECT: [], GAIN_POWER_EFFECT: []}

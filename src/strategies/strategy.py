@@ -13,10 +13,12 @@ PLAYER_INDEX_TO_COLOR = {
 
 
 class Strategy(object):
-  def __init__(self, tag, player_index):
+  def __init__(self, tag, player_index, num_players, card_dictionary):
     self.tag = tag
     self.player_index = player_index
-    self.card_dictionary = CardDecoder().decode_cards()
+    self.num_players = num_players
+
+    self.card_dictionary = card_dictionary
 
     logger_name = "p%d.%s" % (player_index, tag)
     color = PLAYER_INDEX_TO_COLOR[player_index]

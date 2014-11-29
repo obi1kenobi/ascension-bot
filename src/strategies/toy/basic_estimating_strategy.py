@@ -21,12 +21,11 @@ from src.estimators.metric_tracker import MetricTracker
 TAG = "basic_estimating"
 
 class BasicEstimatingStrategy(Strategy):
-  def __init__(self, player_index, num_players):
-    super(BasicEstimatingStrategy, self).__init__(TAG, player_index)
+  def __init__(self, player_index, num_players, card_dictionary):
+    super(BasicEstimatingStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
     def make_metric_tracker():
       return MetricTracker(num_players * Board.HONOR_PER_PLAYER)
 
-    self.num_players = num_players
     self.my_tracker = make_metric_tracker()
 
     self.opponent_trackers = defaultdict(make_metric_tracker)
