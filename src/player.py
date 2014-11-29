@@ -128,7 +128,7 @@ class Player(object):
     if "Construct" in card.card_type:
       self.constructs.append(card)
 
-      if self.considers_card_mechana_construct(card_name):
+      if self.considers_card_mechana_construct(card):
         self.has_played_mechana_construct = True
 
       raise_strategy_card_events(self.board, \
