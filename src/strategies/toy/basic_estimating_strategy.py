@@ -12,6 +12,7 @@
 """
 
 from ..strategy import Strategy
+from src.board import Board
 from src.moves import Move
 from collections import defaultdict
 from src.constants.effect_indexes import *
@@ -20,10 +21,16 @@ from src.estimators.metric_tracker import MetricTracker
 TAG = "basic_estimating"
 
 class BasicEstimatingStrategy(Strategy):
-  def __init__(self, player_index):
+  def __init__(self, player_index, num_players):
     super(BasicEstimatingStrategy, self).__init__(TAG, player_index)
-    self.tracker = MetricTracker()
-    self.tracker.update_honor_remaining(60)  # two-player honor is 60
+    def make_metric_tracker():
+      t = MetricTracker()
+      t.update_honor_remaining(num_players * Board.HONOR_PER_PLAYER)
+      return t
+
+    self.num_players = num_players
+    self.my_tracker = make_metric_tracker()
+    self.opponent_trackers = defaultdict(make_metric_tracker)
 
   def _execute_turn(self, board):
     assert board.current_player() == board.players[self.player_index]
@@ -49,23 +56,23 @@ class BasicEstimatingStrategy(Strategy):
       self.play_move(board, move)
 
     for i in xrange(runes/2):
-      self.tracker.update_acquired_card(board.card_dictionary.find_card("Heavy Infantry"))
+      self.my_tracker.update_acquired_card(board.card_dictionary.find_card("Heavy Infantry"))
 
   def _update_estimates(self, board):
     player = board.current_player()
     hand = player.get_hand()
 
-    honor_gained_this_round = self.tracker.metrics['honor-remaining'] - board.honor_remaining
+    honor_gained_this_round = self.my_tracker.metrics['honor-remaining'] - board.honor_remaining
     assert honor_gained_this_round >= 0
 
-    self.tracker.update_honor_remaining(board.honor_remaining)
-    self.tracker.update_honor_gained_this_round(honor_gained_this_round)
+    self.my_tracker.update_honor_remaining(board.honor_remaining)
+    self.my_tracker.update_honor_gained_this_round(honor_gained_this_round)
 
   def play_turn(self, board, opponents_previous_moves):
     self._execute_turn(board)
     self._update_estimates(board)
 
-    self.log("Estimates: %s" % self.tracker.metrics)
+    self.log("Estimates: %s" % self.my_tracker.metrics)
     self.log("Honor: %d" % board.current_player().honor)
 
   def choose_construct_for_discard(self, board):

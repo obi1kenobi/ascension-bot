@@ -31,14 +31,16 @@ def play_game(strategies):
 
   return board.victor
 
-if __name__ == "__main__":
+def main():
   strategies = [
     # BasicStrategy(0),  # player index 0
     # BasicStrategy(1)   # player index 1
 
-    BasicEstimatingStrategy(0),
-    BasicEstimatingStrategy(1)
+    BasicEstimatingStrategy(0, NUM_PLAYERS),
+    BasicEstimatingStrategy(1, NUM_PLAYERS)
   ]
+
+  assert len(strategies) == NUM_PLAYERS
 
   log.initialize_logging(logging.INFO)
 
@@ -48,3 +50,5 @@ if __name__ == "__main__":
   else:
     print "Player %s won" % victor
 
+if __name__ == "__main__":
+  main()

@@ -3,15 +3,14 @@ from deck import Deck
 from player import Player
 from src.events import raise_end_round_events
 
-
-HONOR_PER_PLAYER = 30
-
-NUM_MYSTICS = 30
-NUM_HEAVY = 29
-
-CENTER_SIZE = 6
-
 class Board(object):
+  HONOR_PER_PLAYER = 30
+
+  NUM_MYSTICS = 30
+  NUM_HEAVY = 29
+
+  CENTER_SIZE = 6
+
   def __init__(self, num_players, strategies):
     self.game_over = False
 
@@ -25,14 +24,14 @@ class Board(object):
     self.victor = None
 
     self.void = []
-    self.mystics = NUM_MYSTICS
-    self.heavy = NUM_HEAVY
+    self.mystics = Board.NUM_MYSTICS
+    self.heavy = Board.NUM_HEAVY
     self.cultist = 1
 
     self.card_dictionary = CardDecoder().decode_cards()
 
     self.deck = Deck.create_center_deck(self.card_dictionary)
-    self.center = [self.deck.get_next_card() for i in xrange(CENTER_SIZE)]
+    self.center = [self.deck.get_next_card() for i in xrange(Board.CENTER_SIZE)]
 
     self.players = [
       Player(self, strategies[i], self.card_dictionary) for i in xrange(num_players)
@@ -42,7 +41,7 @@ class Board(object):
     self.turns = 0
     self.rounds = 0
     self.current_player_index = 0
-    self.honor_remaining = HONOR_PER_PLAYER * num_players
+    self.honor_remaining = Board.HONOR_PER_PLAYER * num_players
 
   # Returns the card that it removed. Raises an exception if the card isn't there
   def remove_card_from_center(self, card_name):
