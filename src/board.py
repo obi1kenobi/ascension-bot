@@ -34,7 +34,7 @@ class Board(object):
     self.center = [self.deck.get_next_card() for i in xrange(Board.CENTER_SIZE)]
 
     self.players = [
-      Player(self, strategies[i], self.card_dictionary) for i in xrange(num_players)
+      Player(self, strategies[i], i, self.card_dictionary) for i in xrange(num_players)
     ]
     self.moves_played_this_turn = []
     self.strategies = strategies
@@ -88,7 +88,7 @@ class Board(object):
     self.turns += 1
 
   def end_round(self):
-    raise_end_round_events(self.strategies)
+    raise_end_round_events(self)
     self.rounds += 1
 
   def compute_victor(self):

@@ -17,8 +17,9 @@ def create_initial_player_deck(card_dictionary):
   return Deck([apprentice] * NUM_APPRENTICE + [militia] * NUM_MILITIA)
 
 class Player(object):
-  def __init__(self, board, strategy, card_dictionary):
+  def __init__(self, board, strategy, player_index, card_dictionary):
     self.board = board
+    self.player_index = player_index
     self.strategy = strategy
     self.runes_remaining = 0
     self.power_remaining = 0
@@ -64,9 +65,7 @@ class Player(object):
       if len(self.discard) == 0:
         return
 
-      raise_strategy_deck_events(self.board,  \
-        Strategy.me_deck_finished,            \
-        Strategy.opponent_deck_finished)
+      raise_strategy_deck_events(self.board, 'deck_finished')
 
       self.deck.shuffle_in_cards(self.discard)
       self.discard = []
@@ -131,10 +130,7 @@ class Player(object):
       if self.considers_card_mechana_construct(card_name):
         self.has_played_mechana_construct = True
 
-      raise_strategy_card_events(self.board, \
-        Strategy.me_construct_placed,        \
-        Strategy.opponent_construct_placed,  \
-        card_name)
+      raise_strategy_card_events(self.board, 'construct_placed', card_name)
 
     else:
       self.played_cards.append(card)

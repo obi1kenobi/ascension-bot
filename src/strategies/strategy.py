@@ -162,7 +162,7 @@ class Strategy(object):
   # Called when both this strategy and all opponent strategies
   # have played their turn (i.e. they have played equal # of turns)
   # < raised from events.py#raise_end_round_events (via board.py#end_round) >
-  def round_finished(self):
+  def round_finished(self, board):
     pass
 
   ### End of Other Events ###

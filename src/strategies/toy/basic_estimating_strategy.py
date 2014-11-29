@@ -24,13 +24,21 @@ class BasicEstimatingStrategy(Strategy):
   def __init__(self, player_index, num_players):
     super(BasicEstimatingStrategy, self).__init__(TAG, player_index)
     def make_metric_tracker():
-      t = MetricTracker()
-      t.update_honor_remaining(num_players * Board.HONOR_PER_PLAYER)
-      return t
+      return MetricTracker(num_players * Board.HONOR_PER_PLAYER)
 
     self.num_players = num_players
     self.my_tracker = make_metric_tracker()
+
     self.opponent_trackers = defaultdict(make_metric_tracker)
+
+  def play_turn(self, board, opponents_previous_moves):
+    self._execute_turn(board)
+
+  def choose_construct_for_discard(self, board):
+    assert len(board.players[self.player_index].constructs) == 0
+
+    raise Exception("I don't have any constructs in play. " +
+      "Why am I being asked to discard one?")
 
   def _execute_turn(self, board):
     assert board.current_player() == board.players[self.player_index]
@@ -55,29 +63,30 @@ class BasicEstimatingStrategy(Strategy):
     for move in moves:
       self.play_move(board, move)
 
-    for i in xrange(runes/2):
-      self.my_tracker.update_acquired_card(board.card_dictionary.find_card("Heavy Infantry"))
+  def me_acquired_card(self, card):
+    self.my_tracker.update_acquired_card(card)
 
-  def _update_estimates(self, board):
-    player = board.current_player()
-    hand = player.get_hand()
+  def opponent_acquired_card(self, opponent_index, card):
+    self.opponent_trackers[opponent_index].update_acquired_card(card)
 
-    honor_gained_this_round = self.my_tracker.metrics['honor-remaining'] - board.honor_remaining
-    assert honor_gained_this_round >= 0
+  def me_banished_from_deck(self, card):
+    self.my_tracker.update_banished_card_from_deck(card)
 
-    self.my_tracker.update_honor_remaining(board.honor_remaining)
-    self.my_tracker.update_honor_gained_this_round(honor_gained_this_round)
+  def opponent_banished_from_deck(self, opponent_index, card):
+    self.opponent_trackers[opponent_index].update_banished_card_from_deck(card)
 
-  def play_turn(self, board, opponents_previous_moves):
-    self._execute_turn(board)
+  def round_finished(self, board):
     self._update_estimates(board)
-
     self.log("Estimates: %s" % self.my_tracker.metrics)
     self.log("Honor: %d" % board.current_player().honor)
 
-  def choose_construct_for_discard(self, board):
-    assert len(board.players[self.player_index].constructs) == 0
+  def _update_estimates(self, board):
+    player = board.current_player()
+    honor = player.honor
+    remaining = board.honor_remaining
 
-    raise Exception("I don't have any constructs in play. " +
-      "Why am I being asked to discard one?")
+    self.my_tracker.update_honor(honor, remaining)
 
+    for player in board.other_players():
+      honor = player.honor
+      self.opponent_trackers[player.player_index].update_honor(honor, remaining)

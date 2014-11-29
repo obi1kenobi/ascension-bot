@@ -11,7 +11,6 @@
 
 import random
 from events import raise_strategy_card_events, raise_strategy_card_events_for_player
-from src.strategies.strategy import Strategy
 
 def apply_simple_effect(board, effect, targets):
   # TODO(ddoucet): setup logging for server and log effect name,param here (str(effect)?)
@@ -92,10 +91,7 @@ def _banish_card_from_hand(board, param, my_targets, all_targets):
     card = board.current_player().remove_card_from_hand(card_name)
     board.void.append(card)
 
-    raise_strategy_card_events(board,       \
-      Strategy.me_banished_from_deck,       \
-      Strategy.opponent_banished_from_deck, \
-      card_name)
+    raise_strategy_card_events(board, 'banished_from_deck', card_name)
 
 def _banish_card_from_center(board, param, my_targets, all_targets):
   assert param == len(my_targets), "Expected %d targets; got %s" % (
@@ -107,10 +103,7 @@ def _banish_card_from_center(board, param, my_targets, all_targets):
     card = board.remove_card_from_center(card_name)
     board.void.append(card)
 
-    raise_strategy_card_events(board,       \
-      Strategy.me_banished_from_center,       \
-      Strategy.opponent_banished_from_center, \
-      card_name)
+    raise_strategy_card_events(board, 'banished_from_center', card_name)
 
 def _banish_card_from_discard(board, param, my_targets, all_targets):
   assert param == len(my_targets), "Expected %d targets; got %s" % (
@@ -120,10 +113,7 @@ def _banish_card_from_discard(board, param, my_targets, all_targets):
     card = board.current_player().remove_card_from_discard(card_name)
     board.void.append(card)
 
-    raise_strategy_card_events(board,       \
-      Strategy.me_banished_from_deck,       \
-      Strategy.opponent_banished_from_deck, \
-      card_name)
+    raise_strategy_card_events(board, 'banished_from_deck', card_name)
 
 def _defeat_monster(board, param, my_targets, all_targets):
   assert len(my_targets) == 1, "Expected 1 target; got %s" % str(my_targets)
@@ -180,17 +170,13 @@ def _banish_for_additional_turn(board, param, my_targets, all_targets):
   card = board.current_player().remove_card_from_constructs(card_name)
   board.void.append(card)
 
-  raise_strategy_card_events(board,       \
-    Strategy.me_banished_from_deck,       \
-    Strategy.opponent_banished_from_deck, \
-    card_name)
+  raise_strategy_card_events(board, 'banished_from_deck', card_name)
 
   # we know the only card with this effect is the Tablet of Time's Dawn
-  assert card_name == "Tablet of Time's Dawn"
-  raise_strategy_card_events(board,       \
-    Strategy.me_construct_removed,        \
-    Strategy.opponent_construct_removed,  \
-    card_name)
+  # and it's a construct
+  assert card.is_construct()
+
+  raise_strategy_card_events(board, 'construct_removed', card_name)
 
 def _pay_less_runes_toward_construct(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected 0 targets; got %s" % str(my_targets)
@@ -225,10 +211,7 @@ def _destroy_opponent_construct(board, opponent_index):
   card = opponent.remove_card_from_constructs(card_name)
   opponent.discard.append(card)
 
-  raise_strategy_card_events_for_player(board, opponent_index,  \
-    Strategy.me_construct_removed,                              \
-    Strategy.opponent_construct_removed,                        \
-    card_name)
+  raise_strategy_card_events_for_player(board, opponent_index, 'construct_removed', card_name)
 
 def _each_opponent_destroys_construct(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected 0 targets; got %s" % str(my_targets)
@@ -261,17 +244,11 @@ def _take_random_card_from_each_opponent(board, param, my_targets, all_targets):
     card_name = random.choice(opponent.hand).name
     card = opponent.remove_card_from_hand(card_name)
 
-    raise_strategy_card_events_for_player(board, opponent_index, \
-      Strategy.me_banished_from_deck,                            \
-      Strategy.opponent_banished_from_deck,                      \
-      card_name)
+    raise_strategy_card_events_for_player(board, opponent_index, 'banished_from_deck', card_name)
 
     board.current_player.hand.append(card)
 
-    raise_strategy_card_events(board,       \
-      Strategy.me_acquired_card,            \
-      Strategy.opponent_acquired_card,      \
-      card_name)
+    raise_strategy_card_events(board, 'acquired_card', card_name)
 
 def _gain_power_if_lifebound_hero_played(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
