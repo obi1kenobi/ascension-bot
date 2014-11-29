@@ -2,6 +2,7 @@
 
 import logging
 from src.strategies.basic_strategy import BasicStrategy
+from src.strategies.user_strategy.user_strategy import UserStrategy
 from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
 from src.board import Board
 from src import log
@@ -38,6 +39,9 @@ def main():
 
     BasicEstimatingStrategy(0, NUM_PLAYERS),
     BasicEstimatingStrategy(1, NUM_PLAYERS)
+
+    # UserStrategy(0),
+    # UserStrategy(1)
   ]
 
   assert len(strategies) == NUM_PLAYERS

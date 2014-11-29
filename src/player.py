@@ -2,6 +2,7 @@ from random import shuffle
 from deck import Deck
 from copy import copy
 from events import raise_strategy_card_events, raise_strategy_deck_events
+from card_decoder.cards import Acquirable
 from src.strategies.strategy import Strategy
 
 # Number of apprentices and militia in each player's starting deck
@@ -48,6 +49,11 @@ class Player(object):
     self.should_take_additional_turn = False
     self.honor_for_defeating_monster = 0
     self.has_played_mechana_construct = False
+
+  def compute_honor(self):
+    all_cards = self.deck.cards + self.played_cards + self.discard + self.constructs
+    assert all(isinstance(card, Acquirable) for card in all_cards)
+    return self.honor + sum(card.honor for card in all_cards)
 
   # This is important to do because this will be used by the player when trying
   # to decide what cards to play. We need to copy it because playing cards
@@ -127,7 +133,7 @@ class Player(object):
     if "Construct" in card.card_type:
       self.constructs.append(card)
 
-      if self.considers_card_mechana_construct(card_name):
+      if self.considers_card_mechana_construct(card):
         self.has_played_mechana_construct = True
 
       raise_strategy_card_events(self.board, 'construct_placed', card_name)
