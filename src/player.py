@@ -27,6 +27,7 @@ class Player(object):
     self.honor = 0
 
     self.played_cards = []
+    self.acquired_cards = []
     self.discard = []
     self.constructs = []
 
@@ -51,7 +52,8 @@ class Player(object):
     self.has_played_mechana_construct = False
 
   def compute_honor(self):
-    all_cards = self.deck.cards + self.played_cards + self.discard + self.constructs
+    all_cards = (self.deck.cards + self.played_cards + self.acquired_cards +
+      self.discard + self.constructs)
     assert all(isinstance(card, Acquirable) for card in all_cards)
     return self.honor + sum(card.honor for card in all_cards)
 
@@ -102,9 +104,12 @@ class Player(object):
   def remove_card_from_played_cards(self, card_name):
     return self._remove_card_from_pile("played cards", self.played_cards, card_name)
 
+  def remove_card_from_acquired_cards(self, card_name):
+    return self._remove_card_from_pile("acquired cards", self.acquired_cards, card_name)
+
   def acquire(self, card):
     # Similar to why we don't play cards into the discard (see below)
-    self.played_cards.append(card)
+    self.acquired_cards.append(card)
 
   # Raises an exception if there aren't enough runes and credits to pay for it
   def pay_for_acquired_card(self, card):
@@ -115,7 +120,7 @@ class Player(object):
       self.runes_toward_mechana_constructs -= paying
       cost -= paying
 
-    if "Construct" in card.card_type:
+    if card.is_construct():
       paying = min(self.runes_toward_constructs, cost)
       self.runes_toward_constructs -= paying
       cost -= paying
@@ -130,7 +135,7 @@ class Player(object):
   # which point we add them to the discard pile.
   def play_card(self, card_name):
     card = self.remove_card_from_hand(card_name)
-    if "Construct" in card.card_type:
+    if card.is_construct():
       self.constructs.append(card)
 
       if self.considers_card_mechana_construct(card):
@@ -174,6 +179,7 @@ class Player(object):
 
     self.discard.extend(self.hand)
     self.discard.extend(self.played_cards)
+    self.discard.extend(self.acquired_cards)
     self.hand = []
     self.played_cards = []
 

@@ -78,10 +78,9 @@ def _gain_honor(board, param, my_targets, all_targets):
 def _gain_power(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
 
-  board.current_player().power_remaining += param
+  assert board.current_player().power_remaining + param >= 0, "Not enough power to play this card")
 
-  assert board.current_player().power_remaining >= 0, ("Did not have enough " +
-    "runes to play this card")
+  board.current_player().power_remaining += param
 
 def _banish_card_from_hand(board, param, my_targets, all_targets):
   assert param == len(my_targets), "Expected %d targets; got %s" % (
@@ -165,6 +164,7 @@ def _banish_for_additional_turn(board, param, my_targets, all_targets):
   assert len(my_targets) == 1, "Expected 1 target; got %s" % str(my_targets)
 
   card_name = my_targets[0]
+  assert card_name == "Tablet of Time's Dawn"
 
   board.current_player().should_take_additional_turn = True
   card = board.current_player().remove_card_from_constructs(card_name)
@@ -227,7 +227,7 @@ def _put_acquired_mechana_construct_into_play(board, param, my_targets, all_targ
   assert len(my_targets) == 1, "Expected 1 target; got %s" % str(my_targets)
 
   card_name = my_targets[0]
-  card = board.current_player().remove_card_from_played_cards(card_name)
+  card = board.current_player().remove_card_from_acquired_cards(card_name)
   board.current_player().constructs.append(card)
 
 def _treat_all_constructs_as_mechana_constructs(board, param, my_targets, all_targets):
@@ -237,6 +237,7 @@ def _treat_all_constructs_as_mechana_constructs(board, param, my_targets, all_ta
   pass
 
 def _take_random_card_from_each_opponent(board, param, my_targets, all_targets):
+  assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
   opponent_indices = _get_opponent_indices(board)
 
   for opponent_index in opponent_indices:
@@ -258,6 +259,8 @@ def _gain_power_if_lifebound_hero_played(board, param, my_targets, all_targets):
     board.current_player().power_remaining += param
 
 def _opponents_destroy_all_but_one_construct(board, param, my_targets, all_targets):
+  assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
+
   opponent_indices = _get_opponent_indices(board)
 
   for opponent_index in opponent_indices:
@@ -268,6 +271,8 @@ def _opponents_destroy_all_but_one_construct(board, param, my_targets, all_targe
       _destroy_opponent_construct(board, opponent_index)
 
 def _gain_power_for_each_mechana_construct(board, param, my_targets, all_targets):
+  assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
+
   num_mechana_constructs = sum(1 for card in board.current_player().constructs
     if board.current_player().considers_card_mechana_construct(card))
 
