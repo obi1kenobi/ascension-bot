@@ -21,11 +21,11 @@ def main():
     # BasicStrategy(0, NUM_PLAYERS, card_dictionary),  # player index 0
     # BasicStrategy(1, NUM_PLAYERS, card_dictionary)   # player index 1
 
-    BasicEstimatingStrategy(0, NUM_PLAYERS, card_dictionary),
-    BasicEstimatingStrategy(1, NUM_PLAYERS, card_dictionary)
+    # BasicEstimatingStrategy(0, NUM_PLAYERS, card_dictionary),
+    # BasicEstimatingStrategy(1, NUM_PLAYERS, card_dictionary)
 
-    # UserStrategy(0, NUM_PLAYERS, card_dictionary),
-    # UserStrategy(1, NUM_PLAYERS, card_dictionary)
+     UserStrategy(0, NUM_PLAYERS, card_dictionary),
+     UserStrategy(1, NUM_PLAYERS, card_dictionary)
   ]
 
   victor = game.play_game(strategies)

@@ -37,8 +37,6 @@ class UserStrategy(Strategy):
     super(UserStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
 
   def play_card(self, cards_not_played):
-    targets = {GAIN_RUNES_EFFECT: [], GAIN_HONOR_EFFECT: [], GAIN_POWER_EFFECT: []}
-
     # The user wants to play a card, give him the list of cards that are not played or say that he has played all
     if len(cards_not_played) == 0:
       print "All cards have been played"
@@ -56,6 +54,8 @@ class UserStrategy(Strategy):
           cards_to_play = [int(card_idx)]
       
       for idx in cards_to_play:
+        #TODO(Rumen): need to specify targets for this card
+
         self.play_move(self.board, Move("play", self.hand[idx].name, targets))
         cards_not_played.remove(idx)
 
@@ -112,16 +112,7 @@ class UserStrategy(Strategy):
         else:
           targets = []
 
-           # print "Please give %d effect targets: " % card.effect.param
-           # for _ in xrange(card.effect.param):
-            #  targets.append(read_string())
-              # TODO(Rumen): That's super unsafe and will definitely assert, because 
-              # we will give a wrong target. A way to fix it is have two modes for all of the 
-              # functions into board, one which returns false and one which asserts, so 
-              # we can have play_move just return false and say that the move was invalid
-              # Another way to do it is to copy one more time all of the effects functions
-              # and check if the targets are valid
-
+          #TODO(Rumen): prompt user for targets
           self.play_move(self.board, Move("defeat", card.name, {GAIN_HONOR_EFFECT: targets}))
 
   def activate_card(self, constructs):
@@ -148,6 +139,7 @@ class UserStrategy(Strategy):
               ("Player has already activated %s as many times as he can (%d)" % (
                     card_name, count_of_construct))
         else:
+          #TODO(Rumen): prompt user for targets
           self.play_move(self.board, Move("activate", card.name, targets))
 
   def play_turn(self, board, opponents_previous_moves):

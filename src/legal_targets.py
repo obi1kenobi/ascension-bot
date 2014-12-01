@@ -70,7 +70,7 @@ def _generate_legal_banish_card_from_discard(board, param):
 def _generate_legal_defeat_monster(board, param):
   # All monsters in the center (including the Cultist) with cost <= param
   return [(card.name,) for card in board.center
-        if card.is_monster() and card.cost <= param] +
+        if card.is_monster() and card.cost <= param] + \
     ([("Cultist",)] if param >= 2 else [])
 
 def generate_legal_banish_for_additional_turn(board, param):
