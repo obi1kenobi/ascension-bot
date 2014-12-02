@@ -1,4 +1,13 @@
 """
+User strategy, which allows the user to play. 
+
+For every play_turn call it loops until the user decides that it is end of move.
+The user specifies 0, 1, 2, 3, 4, depending on what action he wants to do:
+  play, defeat, acquire, activate or end turn.
+For every action he then specifies card and eventually targets if needed.
+
+If the user specifies an invalid moves, than an error is displayed and the action
+is ignored.
 """
 
 from ..strategy import Strategy
@@ -8,9 +17,14 @@ from copy import copy
 
 TAG = "user"
 
-GAIN_RUNES_EFFECT = 3
-GAIN_HONOR_EFFECT = 4
-GAIN_POWER_EFFECT = 5
+DISCARD_CARDS_EFFECT            = 1
+DRAW_CARDS_EFFECT               = 2
+GAIN_RUNES_EFFECT               = 3
+GAIN_HONOR_EFFECT               = 4
+GAIN_POWER_EFFECT               = 5
+BANISH_CARD_IN_HAND_EFFECT      = 6
+BANISH_CARD_IN_CENTER_EFFECT    = 7
+BANISH_CARD_FROM_DICARD_EFFECT  = 8
 
 def get_string_of_cards(hand):
   return str([(("[%d] " % idx) + (hand[idx].name)) for idx in xrange(len(hand))])
@@ -35,6 +49,14 @@ def read_string():
 class UserStrategy(Strategy):
   def __init__(self, player_index, num_players, card_dictionary):
     super(UserStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
+  
+  def ask_for_targets(self, card):
+    s = card.effect.generate_legal_effect_sets();
+    for i in s:
+      for j in i:
+        print j
+      print ""
+    return {GAIN_RUNES_EFFECT: [], GAIN_HONOR_EFFECT: [], GAIN_POWER_EFFECT: []}
 
   def play_card(self, cards_not_played):
     # The user wants to play a card, give him the list of cards that are not played or say that he has played all
@@ -54,7 +76,7 @@ class UserStrategy(Strategy):
           cards_to_play = [int(card_idx)]
       
       for idx in cards_to_play:
-        #TODO(Rumen): need to specify targets for this card
+        targets = self.ask_for_targets(self.hand[idx])
 
         self.play_move(self.board, Move("play", self.hand[idx].name, targets))
         cards_not_played.remove(idx)
@@ -110,13 +132,10 @@ class UserStrategy(Strategy):
         if card.cost > self.player.power_remaining:
           print "Don't have enough power to defeat %s" % card.name
         else:
-          targets = []
-
-          #TODO(Rumen): prompt user for targets
-          self.play_move(self.board, Move("defeat", card.name, {GAIN_HONOR_EFFECT: targets}))
+          targets = self.ask_for_targets(card) 
+          self.play_move(self.board, Move("defeat", card.name, targets))
 
   def activate_card(self, constructs):
-    targets = {GAIN_RUNES_EFFECT: [], GAIN_HONOR_EFFECT: [], GAIN_POWER_EFFECT: []}
     if len(constructs) == 0:
       print "No constructs"
     else:
@@ -139,7 +158,7 @@ class UserStrategy(Strategy):
               ("Player has already activated %s as many times as he can (%d)" % (
                     card_name, count_of_construct))
         else:
-          #TODO(Rumen): prompt user for targets
+          targets = self.ask_for_targets(card)
           self.play_move(self.board, Move("activate", card.name, targets))
 
   def play_turn(self, board, opponents_previous_moves):
@@ -151,7 +170,6 @@ class UserStrategy(Strategy):
 
     hand = player.get_hand()
     self.hand = hand 
-    targets = {GAIN_RUNES_EFFECT: [], GAIN_HONOR_EFFECT: [], GAIN_POWER_EFFECT: []}
 
     cards_not_played = [idx for idx in xrange(len(hand))]
 
