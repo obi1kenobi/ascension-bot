@@ -15,6 +15,7 @@ HAND_SIZE = 5
 def create_initial_player_deck(card_dictionary):
   apprentice = card_dictionary.find_card("Apprentice")
   militia = card_dictionary.find_card("Militia")
+
   return Deck([apprentice] * NUM_APPRENTICE + [militia] * NUM_MILITIA)
 
 class Player(object):
@@ -49,7 +50,7 @@ class Player(object):
     self.honor_for_lifebound_hero = 0
     self.should_take_additional_turn = False
     self.honor_for_defeating_monster = 0
-    self.has_played_mechana_construct = False
+    self.played_constructs = []
 
   def compute_honor(self):
     all_cards = (self.deck.cards + self.played_cards + self.acquired_cards +
@@ -87,7 +88,7 @@ class Player(object):
     if len(cards) == 0:
       pile_str = ', '.join(card.name for card in pile)
       raise Exception('Card %s not found in %s (%s)' % (
-        card_name, pile_name, hand_str))
+        card_name, pile_name, pile_str))
 
     pile.remove(cards[0])
     return cards[0]
@@ -129,6 +130,9 @@ class Player(object):
     assert self.runes_remaining >= 0, "Did not have enough runes to acquire %s" % (
       card.name)
 
+  def has_played_mechana_construct(self):
+    return any(self.considers_card_mechana_construct(card) for card in self.played_constructs)
+
   # Note that the cards don't go immediately into the discard. This would
   # allow certain strategies that cycle through the deck several times
   # in a turn. Instead, we hold the cards until the end of the turn, at
@@ -138,13 +142,19 @@ class Player(object):
     if card.is_construct():
       self.constructs.append(card)
 
-      if self.considers_card_mechana_construct(card):
-        self.has_played_mechana_construct = True
-
       raise_strategy_card_events(self.board, 'construct_placed', card_name)
-
     else:
       self.played_cards.append(card)
+      self.played_constructs.append(card)
+
+  def can_activate_construct(self, card_name):
+    count_of_construct = sum(1 for card in self.constructs
+      if card.name == card_name)
+
+    assert count_of_construct > 0
+
+    return card_name not in self.num_times_construct_activated or \
+      self.num_times_construct_activated[card_name] < count_of_construct
 
   # Doesn't actually perform the effect. Just ensures the player can activate
   def activate_construct(self, card_name):
@@ -154,9 +164,14 @@ class Player(object):
     assert count_of_construct > 0, ("Player doesn't have %s in play, but tried" +
       " to activate it" % card_name)
 
+    if card_name not in self.num_times_construct_activated:
+      self.num_times_construct_activated[card_name] = 0
+
     assert self.num_times_construct_activated[card_name] < count_of_construct, ("Player" +
       " has already activated %s as many times as he can (%d)" % (
         card_name, count_of_construct))
+
+    self.num_times_construct_activated[card_name] += 1
 
   # Move a given card to the discard pile. Raises an exception if the card
   # wasn't found.

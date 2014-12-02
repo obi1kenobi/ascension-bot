@@ -27,7 +27,6 @@ def _test_card(card, should_contain_list, expected_sets):
       card.card_name, effect_index)
 
   actual_sets = card.generate_legal_effect_sets()
-  print '\n'.join(','.join(str(e) for e in s) for s in actual_sets)
   for (expected_set, actual_set) in zip(expected_sets, actual_sets):
     for (expected_effect, actual_effect) in zip(expected_set, actual_set):
       assert_correct_effect(expected_effect, actual_effect)

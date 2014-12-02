@@ -6,6 +6,7 @@ from src.card_decoder.decoder import CardDecoder
 from src.strategies.basic_strategy import BasicStrategy
 from src.strategies.user_strategy.user_strategy import UserStrategy
 from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
+from src.strategies.random_strategy import RandomStrategy
 
 VERBOSE = True
 
@@ -24,11 +25,14 @@ def main():
     # BasicEstimatingStrategy(0, NUM_PLAYERS, card_dictionary),
     # BasicEstimatingStrategy(1, NUM_PLAYERS, card_dictionary)
 
-     UserStrategy(0, NUM_PLAYERS, card_dictionary),
-     UserStrategy(1, NUM_PLAYERS, card_dictionary)
+     # UserStrategy(0, NUM_PLAYERS, card_dictionary),
+     # UserStrategy(1, NUM_PLAYERS, card_dictionary)
+
+      RandomStrategy(0, NUM_PLAYERS, card_dictionary),
+      RandomStrategy(1, NUM_PLAYERS, card_dictionary),
   ]
 
-  victor = game.play_game(strategies)
+  victor = game.play_game(strategies).victor
   if victor == "tie":
     print "Players tied"
   else:

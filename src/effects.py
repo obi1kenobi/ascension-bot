@@ -12,8 +12,9 @@
 import random
 from events import raise_strategy_card_events, raise_strategy_card_events_for_player
 
+# Returns a list of pending moves in the form of tuples (move_type, card_name, targets)
+# We do this to avoid a cyclic dependency between this file and moves.py
 def apply_simple_effect(board, effect, targets):
-  # TODO(ddoucet): setup logging for server and log effect name,param here (str(effect)?)
   fn = {
      1: _discard_cards,
      2: _draw_cards,
@@ -44,7 +45,8 @@ def apply_simple_effect(board, effect, targets):
     27: _acquire_or_defeat_anything
   }[effect.effect_index]
 
-  fn(board, effect.param, targets[effect.effect_index], targets)
+  pending_moves = fn(board, effect.param, targets[effect.effect_index], targets)
+  return [] if pending_moves is None else pending_moves
 
 def _discard_cards(board, param, my_targets, all_targets):
   assert param == len(my_targets), "Expected %d targets; got %s" % (
@@ -52,7 +54,7 @@ def _discard_cards(board, param, my_targets, all_targets):
 
   for card_name in my_targets:
     # Raises an exception if the card isn't in the player's hand
-    board.current_player().discard_card()
+    board.current_player().discard_card(card_name)
 
 def _draw_cards(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
@@ -62,6 +64,8 @@ def _draw_cards(board, param, my_targets, all_targets):
 
 def _gain_runes(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
+
+  assert board.current_player().runes_remaining + param >= 0, "Not enough runes to play this card"
 
   board.current_player().runes_remaining += param
 
@@ -127,7 +131,7 @@ def _defeat_monster(board, param, my_targets, all_targets):
     " (%s costs %d power)" % (param, card.name, card.cost))
 
   board.current_player().power_remaining += card.cost
-  Move("defeat", card_name, all_targets, all_targets).apply_to_board(board, False)
+  return [("defeat", card_name, all_targets)]
 
 def _pay_less_runes_toward_mechana_construct(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
@@ -146,8 +150,9 @@ def _acquire_hero(board, param, my_targets, all_targets):
   assert card.cost <= param, ("Can only use this effect to acquire heros up to %d runes" +
     " (%s costs %d runes)" % (param, card.name, card.cost))
 
-  board.current_player().runes_remaining += card.cost
-  Move("acquire", card_name, all_targets, all_targets).apply_to_board(board, False)
+  board.remove_card_from_center(card.name)
+  board.current_player().deck.cards.insert(0, card)
+  raise_strategy_card_events(board, 'acquired_card', card_name)
 
 def _gain_honor_for_lifebound_hero(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
@@ -157,8 +162,8 @@ def _gain_honor_for_lifebound_hero(board, param, my_targets, all_targets):
 def _draw_card_for_mechana_construct(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
 
-  if board.current_player().has_played_mechana_construct:
-    board.current_player().draw_card()
+  assert board.current_player().has_played_mechana_construct()
+  board.current_player().draw_card()
 
 def _banish_for_additional_turn(board, param, my_targets, all_targets):
   assert len(my_targets) == 1, "Expected 1 target; got %s" % str(my_targets)
@@ -198,7 +203,7 @@ def _gain_honor_per_faction_of_constructs(board, param, my_targets, all_targets)
   assert len(my_targets) == 0, "Expected 0 targets; got %s" % str(my_targets)
 
   construct_types = set(card.name for card in board.current_player().constructs)
-  board.give_honor(board.current_player(), param * len(construct_type))
+  board.give_honor(board.current_player(), param * len(construct_types))
 
 def _get_opponent_indices(board):
   return [i for i in xrange(len(board.players))
@@ -207,7 +212,7 @@ def _get_opponent_indices(board):
 def _destroy_opponent_construct(board, opponent_index):
   opponent = board.players[opponent_index]
 
-  card_name = board.strategies[opponent_index].choose_construct_for_discard()
+  card_name = board.strategies[opponent_index].choose_construct_for_discard(board)
   card = opponent.remove_card_from_constructs(card_name)
   opponent.discard.append(card)
 
@@ -247,7 +252,7 @@ def _take_random_card_from_each_opponent(board, param, my_targets, all_targets):
 
     raise_strategy_card_events_for_player(board, opponent_index, 'banished_from_deck', card_name)
 
-    board.current_player.hand.append(card)
+    board.current_player().hand.append(card)
 
     raise_strategy_card_events(board, 'acquired_card', card_name)
 
@@ -283,12 +288,12 @@ def _copy_hero(board, param, my_targets, all_targets):
 
   card_name = my_targets[0]
 
-  assert card_name in board.current_player().played_cards, ("Tried to copy" +
-    " the effect of a card that wasn't played")
+  assert any(card.name == card_name for card in board.current_player().played_cards), (
+    "Tried to copy the effect of a card that wasn't played")
 
   card = board.current_player().remove_card_from_played_cards(card_name)
   board.current_player().hand.append(card)
-  Move("play", card_name, all_targets).apply_to_board(board, False)
+  return [("play", card_name, all_targets)]
 
 def _acquire_or_defeat_anything(board, param, my_targets, all_targets):
   assert len(my_targets) == 1, "Expected 1 target; got %s" % str(my_targets)
@@ -300,8 +305,8 @@ def _acquire_or_defeat_anything(board, param, my_targets, all_targets):
     # The param for _defeat_monster is the upper bound of cost that the effect
     # can defeat. In this case, we want anything so we give a very large upper
     # bound.
-    _defeat_monster(board, 10000, my_targets)
+    _defeat_monster(board, 10000, my_targets, all_targets)
   else:
     board.current_player().runes_remaining += card.cost
-    Move("acquire", card_name, all_targets).apply_to_board(board, False)
+    return [("acquire", card_name, all_targets)]
 

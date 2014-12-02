@@ -46,7 +46,7 @@ class Move(object):
     self.targets = targets
 
   def __str__(self):
-    return "%s %s" % (self.move_type, self.card_name)
+    return "%s %s (targets=%s)" % (self.move_type, self.card_name, self.targets)
 
   def apply_to_board(self, board, should_add_to_moves=True):
     if should_add_to_moves:
@@ -64,15 +64,22 @@ class Move(object):
   def _activate_effects(self, board, effect):
     # yuck
     if isinstance(effect, SimpleEffect):
-      apply_simple_effect(board, effect, self.targets)
+      pending_moves = apply_simple_effect(board, effect, self.targets)
+      for move_type, card_name, targets in pending_moves:
+        Move(move_type, card_name, targets).apply_to_board(board, False)
     else:  # compound effect
-      effects_with_targets = [e for e in effect.effects if e.effect_index in targets]
+      def get_effect_list(effect):
+        if isinstance(effect, SimpleEffect):
+          return [effect]
+        return [e for ef in effect.effects for e in get_effect_list(ef)]
+
+      effects_with_targets = [e for e in get_effect_list(effect) if e.effect_index in self.targets]
       if effect.compound_type == "AND":
-        assert len(effects_with_targets) == len(effect.effects)
-        self._activate_effects(board, [effects_with_targets])
+        for effect in effects_with_targets:
+          self._activate_effects(board, effect)
       else:
         assert len(effects_with_targets) == 1
-        self._activate_effects(board, [effects_with_targets[0]])
+        self._activate_effects(board, effects_with_targets[0])
 
   def _activate_card_effects(self, board):
     card = board.card_dictionary.find_card(self.card_name)
@@ -81,14 +88,17 @@ class Move(object):
   def apply_play(self, board):
     assert self.move_type == "play"
 
-    if board.card_dictionary.find_card(self.card_name).card_type == "Lifebound Hero":
+    card = board.card_dictionary.find_card(self.card_name)
+    if card.is_lifebound() and card.is_hero():
       board.give_honor(board.current_player(),
         board.current_player().honor_for_lifebound_hero)
       board.current_player().honor_for_lifebound_hero = 0
 
     # play_card raises an exception if the card isn't there
     board.current_player().play_card(self.card_name)
-    self._activate_card_effects(board)
+
+    if not card.is_construct():
+      self._activate_card_effects(board)
 
   def apply_acquire(self, board):
     assert self.move_type == "acquire"
@@ -131,3 +141,4 @@ class Move(object):
     board.current_player().activate_construct(self.card_name)
 
     self._activate_card_effects(board)
+

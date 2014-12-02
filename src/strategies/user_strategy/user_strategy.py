@@ -12,6 +12,7 @@ is ignored.
 
 from ..strategy import Strategy
 from src.moves import Move
+from src.move_gen import generate_moves
 from os import sys
 from copy import copy
 
@@ -38,6 +39,7 @@ def print_game_state(player, board):
     print "Center: " + get_string_of_cards(board.center)
     print "\t\t\t" + str(["[6] Cultist", "[7] Mystic(%d left)" % board.mystics, "[8] Heavy Infantry(%d left)" % board.heavy])
     print ""
+    print [str(m) for m in generate_moves(board)]
 
 def read_symbol():
     return sys.stdin.readline()[0]
@@ -191,7 +193,7 @@ class UserStrategy(Strategy):
         self.acquire_card(cards_not_acquired)
 
       if inp == '2':
-        cards_not_defeated = [idx for idx in xrange(len(hand)) if hand[idx].card_type == "Monster"]
+        cards_not_defeated = [idx for idx in xrange(len(hand)) if board.center[idx].card_type == "Monster"]
         cards_not_defeated.append(6)
         self.defeat_card(cards_not_defeated)
 
