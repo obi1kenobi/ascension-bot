@@ -21,5 +21,5 @@ def play_game(strategies):
   for strategy in strategies:
     strategy.log_end_game(board.victor)
 
-  return board.victor
+  return board
 

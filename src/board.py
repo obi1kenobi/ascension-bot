@@ -104,7 +104,9 @@ class Board(object):
       assert len(player_indices_with_max_honor) == 1
       self.victor = str(player_indices_with_max_honor[0])
 
-    # TODO(ddoucet): this doesn't take into account the honor that players have in their decks
+  def honor_fraction(self, player_index):
+    my_honor = self.players[player_index].compute_honor()
+    return float(my_honor) / sum(p.compute_honor() for p in self.players)
 
   # This will mark that the game has ended if there is no more honor but it
   # won't compute the victor since some players may still need to play.
