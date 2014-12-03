@@ -75,15 +75,61 @@ def _generate_target_sets_for_card(board, card):
     effect_target_sets = [generate_legal_targets(board, card, effect) for effect in effect_set]
 
     # Use products to create sets so that in set i, element j corresponds to the target
-    # sets for effect j
+    # set for effect j.
     products = list(itertools.product(*effect_target_sets))
 
-    # Convert those to the dictionaries that Moves expects (effect index: target set)
+    # Convert those to the dictionaries that moves expects (effect index: target set)
     if products != []:
       # If products is [] that means that at least one of the effects didn't have
       # any legal targets, or it couldn't be activated at this time.
-      target_sets.append({effect_set[j].effect_index: product[j]
-        for product in products for j in xrange(len(effect_set))})
+      for product in products:
+        target_sets.extend(create_target_sets(board, effect_set, product))
 
   return target_sets
+
+def create_target_sets(board, effect_set, product):
+  DEFEAT_MONSTER = 9
+  ACQUIRE_OR_DEFEAT_ANYTHING = 27
+  COPY_HERO = 26
+
+  # In the case of defeating a monster or copying a hero, a child card will
+  # need targets. This method returns that card.
+  def get_child_or_none(effect_index, targets):
+    if effect_index == DEFEAT_MONSTER or effect_index == COPY_HERO:
+      assert len(targets) == 1
+      return board.card_dictionary.find_card(targets[0])
+    elif effect_index == ACQUIRE_OR_DEFEAT_ANYTHING:
+      assert len(targets) == 1
+      card = board.card_dictionary.find_card(targets[0])
+
+      return card if card.is_monster() else None
+
+    return None
+
+  # Returns a list of list of tuples (effect_index, targets)
+  def find_child_targets(effect_index, targets):
+    child = get_child_or_none(effect_index, targets)
+    if child is None:
+      return [[(effect_index, targets)]]
+
+    target_sets = _generate_target_sets_for_card(board, child)
+
+    # target_sets is a list of dicts
+    target_set_tuples = [[(key, target_set[key]) for key in target_set.keys()]
+      for target_set in target_sets]
+
+    return [[(effect_index, targets)] + target_set_tuple
+      for target_set_tuple in target_set_tuples]
+
+  # We have to add some extra logic for the cases like arha templar or twofold
+  # askara, which require some extra targets.
+  child_targets = [find_child_targets(effect_set[i].effect_index, product[i])
+    for i in xrange(len(effect_set))]
+
+  products = list(itertools.product(*child_targets))
+
+  return [{effect_index: targets
+            for L in product
+              for effect_index, targets in L}
+        for product in products]
 

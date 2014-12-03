@@ -308,5 +308,5 @@ def _acquire_or_defeat_anything(board, param, my_targets, all_targets):
     _defeat_monster(board, 10000, my_targets, all_targets)
   else:
     board.current_player().runes_remaining += card.cost
-    return [("acquire", card_name, all_targets)]
+    return [("acquire", card_name, None)]
 
