@@ -6,29 +6,17 @@
       randomly play a move
 """
 
-from strategy import Strategy
-from src.move_gen import generate_moves
 import random
+from legal_move_based_strategy import LegalMoveBasedStrategy
 
 TAG = "random"
 
-class RandomStrategy(Strategy):
+class RandomStrategy(LegalMoveBasedStrategy):
   def __init__(self, player_index, num_players, card_dictionary):
     super(RandomStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
 
-  def play_turn(self, board, opponents_previous_moves):
-    self.log('Center: ' + ', '.join([card.name for card in board.center]))
-    legal_moves = generate_moves(board)
-
-    while len(legal_moves) > 0:
-      self.log('Center: ' + ', '.join([card.name for card in board.center]))
-      self.log("Legal moves: %s" % '; '.join(str(m) for m in legal_moves))
-
-      move = random.choice(legal_moves)
-
-      self.play_move(board, move)
-
-      legal_moves = generate_moves(board)
+  def _choose_move(self, board, legal_move):
+    return random.choice(legal_moves)
 
   def choose_construct_for_discard(self, board):
     return board.players[self.player_index].constructs[0].name

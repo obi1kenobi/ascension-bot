@@ -3,44 +3,15 @@
   honor and buys the cards worth the most honor at the end of the game.
 """
 
-from operator import itemgetter
-from strategy import Strategy
-from src.move_gen import generate_moves
+from legal_move_based_strategy import LegalMoveBasedStrategy
 
 TAG = "greedy"
 
-def argmax(l):
-  index, element = max(enumerate(l), key=itemgetter(1))
-  return index
-
-class GreedyStrategy(Strategy):
+class GreedyStrategy(LegalMoveBasedStrategy):
   def __init__(self, player_index, num_players, card_dictionary):
     super(GreedyStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
 
-  def play_turn(self, board, opponents_previous_moves):
-    legal_moves = generate_moves(board)
-
-    while len(legal_moves) > 0:
-      self.log("Legal moves: " + ', '.join(str(m) for m in legal_moves))
-      move = self._choose_move(legal_moves)
-
-      self.play_move(board, move)
-      legal_moves = generate_moves(board)
-
-  def _moves_of_type(self, legal_moves, move_type):
-    return [move for move in legal_moves if move.move_type == move_type]
-
-  def _move_worth_most_honor(self, moves):
-    # This method doesn't make sense when not acquiring or defeating
-    assert all(move.move_type == "acquire" or move.move_type == "defeat"
-      for move in moves)
-
-    honors = [self.card_dictionary.find_card(move.card_name).honor
-      for move in moves]
-
-    return moves[argmax(honors)]
-
-  def _choose_move(self, legal_moves):
+  def _choose_move(self, board, legal_moves):
     # Activate any constructs
     activates = self._moves_of_type(legal_moves, "activate")
     if len(activates) > 0:
