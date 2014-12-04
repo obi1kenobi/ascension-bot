@@ -12,7 +12,7 @@ from src.strategies.random_strategy import RandomStrategy
 from src.strategies.greedy_strategy import GreedyStrategy
 
 # Let the number of strategies be N. This will run N^2 * GAMES_PER_PAIR games.
-GAMES_PER_PAIR = 32
+GAMES_PER_PAIR = 1000
 
 STRATEGY_TYPES = [
   BasicStrategy,
@@ -99,7 +99,7 @@ if __name__ == "__main__":
   print
   print "Each entry is a tuple of the form"
   print "\t(win %, tie %, average fraction of total honor when winning, average"
-  print "\tfraction when losing, average fraction overall"
+  print "\tfraction when losing, average fraction overall)"
   print
 
   card_dictionary = CardDecoder().decode_cards()

@@ -113,7 +113,7 @@ def _generate_legal_put_acquired_mechana_construct_into_play(board, current_card
 
 def _generate_legal_copy_hero(board, current_card, param):
   return [(card.name,) for card in board.current_player().played_cards
-    if card.is_hero()]
+    if card.is_hero() and card != current_card]
 
 def _generate_legal_acquire_or_defeat_anything(board, current_card, param):
   ret = [("Cultist",)]

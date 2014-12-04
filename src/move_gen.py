@@ -83,11 +83,11 @@ def _generate_target_sets_for_card(board, card):
       # If products is [] that means that at least one of the effects didn't have
       # any legal targets, or it couldn't be activated at this time.
       for product in products:
-        target_sets.extend(create_target_sets(board, effect_set, product))
+        target_sets.extend(create_target_sets(board, card, effect_set, product))
 
   return target_sets
 
-def create_target_sets(board, effect_set, product):
+def create_target_sets(board, current_card, effect_set, product):
   DEFEAT_MONSTER = 9
   ACQUIRE_OR_DEFEAT_ANYTHING = 27
   COPY_HERO = 26
@@ -116,7 +116,8 @@ def create_target_sets(board, effect_set, product):
 
     # target_sets is a list of dicts
     target_set_tuples = [[(key, target_set[key]) for key in target_set.keys()]
-      for target_set in target_sets]
+      for target_set in target_sets
+        if all(current_card.name not in target_set[key] for key in target_set.keys())]
 
     return [[(effect_index, targets)] + target_set_tuple
       for target_set_tuple in target_set_tuples]
