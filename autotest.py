@@ -8,15 +8,16 @@ from src import game, log
 from src.card_decoder.decoder import CardDecoder
 from src.strategies.basic_strategy import BasicStrategy
 from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
+from src.strategies.random_strategy import RandomStrategy
+from src.strategies.greedy_strategy import GreedyStrategy
 
 # Let the number of strategies be N. This will run N^2 * GAMES_PER_PAIR games.
 GAMES_PER_PAIR = 32
 
 STRATEGY_TYPES = [
   BasicStrategy,
-  BasicStrategy,
-  BasicEstimatingStrategy,
-  BasicEstimatingStrategy
+  RandomStrategy,
+  GreedyStrategy,
 ]
 
 NUM_PLAYERS = 2

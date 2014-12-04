@@ -192,3 +192,15 @@ class Defeatable(Card):
   def __init__(self, name, cost, card_type, effect):
     super(Defeatable, self).__init__(name, cost, card_type, effect)
 
+    # Either the effect should be a simple effect (gain honor) or it should be
+    # an and, where one of the top level effects is gaining honor
+    GAIN_HONOR_EFFECT = 4
+    if isinstance(effect, SimpleEffect):
+      assert effect.effect_index == GAIN_HONOR_EFFECT
+      self.honor = effect.param
+    else:
+      gain_honor_effects = [e for e in effect.effects
+        if isinstance(e, SimpleEffect) and e.effect_index == GAIN_HONOR_EFFECT]
+      assert len(gain_honor_effects) == 1
+      self.honor = gain_honor_effects[0].param
+

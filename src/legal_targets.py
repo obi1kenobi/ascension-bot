@@ -99,7 +99,6 @@ def _generate_legal_defeat_monster(board, current_card, param):
 
 def _generate_legal_banish_for_additional_turn(board, current_card, param):
   CARD_NAME = "Tablet of Time's Dawn"
-  print '; '.join(card.name for card in board.current_player().constructs)
   assert any(card.name == CARD_NAME
     for card in board.current_player().constructs)
 
