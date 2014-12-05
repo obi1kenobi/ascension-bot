@@ -1,0 +1,14 @@
+Snapdragon:10.0
+Yggdrasil Staff:9.0
+Master Dhartha:7.0
+Flytrap Witch:6.5
+The All-Seeing Eye:6.0
+Ascetic of the Lidless Eye:5.0
+Void Initiate:4.0
+Twofold Askara:4.0
+Shade of the Black Watch:4.0
+Runic Lycanthrope:3.0
+Lifebound Initiate:2.6
+Wolf Shaman:2.5
+Druids of the Stone Circle:2.0
+Mystic:1.0

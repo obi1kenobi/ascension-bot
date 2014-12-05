@@ -10,6 +10,10 @@ def argmax(l):
   index, element = max(enumerate(l), key=itemgetter(1))
   return index
 
+def argmin(l):
+  index, element = min(enumerate(l), key=itemgetter(1))
+  return index
+
 class LegalMoveBasedStrategy(Strategy):
   def __init__(self, tag, player_index, num_players, card_dictionary):
     super(LegalMoveBasedStrategy, self).__init__(tag, player_index, num_players, card_dictionary)

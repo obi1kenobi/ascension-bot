@@ -8,7 +8,7 @@
   read_card_counts() is also useful for creating the initial deck.
 """
 
-import files
+import src.input.files as files
 from cards import Acquirable, Defeatable, CardDictionary
 from effects import SimpleEffect, CompoundEffect
 
@@ -18,10 +18,7 @@ from effects import SimpleEffect, CompoundEffect
   Returns a dictionary of card name to count
 """
 def read_card_counts():
-  lines = files.read_lines('input/counts.txt')
-  splits = [line.split(':') for line in lines]
-
-  return {split[0]: int(split[1]) for split in splits}
+  return files.read_kvp_file('input/counts.txt', int)
 
 
 class CardDecoder(object):
