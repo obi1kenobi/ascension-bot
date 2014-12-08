@@ -30,6 +30,9 @@ class SimpleEffect(object):
   def contains_effect_index(self, effect_index):
     return self.effect_index == effect_index
 
+  def get_effect_param(self, effect_index):
+    return self.param if effect_index == self.effect_index else None
+
   def generate_legal_effect_sets(self):
     sets = [[self]]
     if self.is_optional:
@@ -88,6 +91,13 @@ class CompoundEffect(object):
 
   def contains_effect_index(self, effect_index):
     return any(effect.contains_effect_index(effect_index) for effect in self.effects)
+
+  def get_effect_param(self, effect_index):
+    for effect in self.effects:
+      param = effect.get_effect_param(effect_index)
+      if param is not None:
+        return param
+    return None
 
   def generate_legal_effect_sets(self):
     sets = (self._generate_and_legal_effect_sets() if self.compound_type == "AND"

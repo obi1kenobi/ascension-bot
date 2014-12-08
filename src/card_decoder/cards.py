@@ -133,6 +133,9 @@ class Card(object):
   def can_use_effect(self, effect_index):
     return self.effect.contains_effect_index(effect_index)
 
+  def get_effect_param(self, effect_index):
+    return self.effect.get_effect_param(effect_index)
+
   # Returns a list of effect lists. Each effect list represents one legal choice
   # of effects.
   def generate_legal_effect_sets(self):

@@ -41,6 +41,10 @@ class Player(object):
     for i in xrange(HAND_SIZE):
       self.draw_card()
 
+  def all_cards(self):
+    return (self.deck.cards + self.played_cards + self.acquired_cards +
+      self.discard + self.constructs)
+
   def clear_per_turn_state(self):
     # keys in this dictionary should only be at most the number of that card
     # (keys are card names)
@@ -53,8 +57,7 @@ class Player(object):
     self.played_constructs = []
 
   def compute_honor(self):
-    all_cards = (self.deck.cards + self.played_cards + self.acquired_cards +
-      self.discard + self.constructs)
+    all_cards = self.all_cards()
     assert all(isinstance(card, Acquirable) for card in all_cards)
     return self.honor + sum(card.honor for card in all_cards)
 

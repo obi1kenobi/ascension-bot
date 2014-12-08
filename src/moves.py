@@ -39,7 +39,7 @@ class Move(object):
   def __init__(self, move_type, card_name, targets):
     assert move_type in ["acquire", "defeat", "play", "activate"]
     if move_type == "acquire":
-      assert targets == None
+      assert targets is None
 
     self.move_type = move_type
     self.card_name = card_name

@@ -17,6 +17,7 @@ def play_game(strategies):
       board.end_turn()
 
   board.compute_victor()
+  print "Rounds:", board.rounds
 
   for strategy in strategies:
     strategy.log_end_game(board.victor)

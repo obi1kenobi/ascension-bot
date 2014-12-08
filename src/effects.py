@@ -259,8 +259,9 @@ def _take_random_card_from_each_opponent(board, param, my_targets, all_targets):
 def _gain_power_if_lifebound_hero_played(board, param, my_targets, all_targets):
   assert len(my_targets) == 0, "Expected no targets; got %s" % str(my_targets)
 
+  # Note that we exclude the most recently played card (this card)
   if any(card.card_type == "Lifebound Hero"
-      for card in board.current_player().played_cards):
+      for card in board.current_player().played_cards[:-1]):
     board.current_player().power_remaining += param
 
 def _opponents_destroy_all_but_one_construct(board, param, my_targets, all_targets):

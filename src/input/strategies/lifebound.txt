@@ -3,12 +3,25 @@ Yggdrasil Staff:9.0
 Master Dhartha:7.0
 Flytrap Witch:6.5
 The All-Seeing Eye:6.0
+Muramasa:5.7
+Oziah the Peerless:5.5
+Cetra, Weaver of the Stars:5.1
 Ascetic of the Lidless Eye:5.0
+Emri, One with the Void:4.5
 Void Initiate:4.0
 Twofold Askara:4.0
 Shade of the Black Watch:4.0
+Voidthirster:3.5
+Landtalker:3.4
+Demon Slayer:3.3
+Arha Templar:3.1
 Runic Lycanthrope:3.0
-Lifebound Initiate:2.6
+Spike Vixen:2.8
+Lifebound Initiate:2.7
 Wolf Shaman:2.5
+Avatar Golem:2.1
 Druids of the Stone Circle:2.0
+Reactor Monk:1.5
 Mystic:1.0
+Heavy Infantry:0.8
+Kor, the Ferromancer:0.7

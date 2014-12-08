@@ -24,6 +24,10 @@ class LegalMoveBasedStrategy(Strategy):
     while len(legal_moves) > 0:
       self.log('Center: ' + ', '.join([card.name for card in board.center]))
       self.log("Legal moves: " + ', '.join(str(m) for m in legal_moves))
+      me = board.current_player()
+      self.log("Runes: %d; Power: %d; Honor: %d" %
+        (me.runes_remaining, me.power_remaining, me.honor))
+
       move = self._choose_move(board, legal_moves)
 
       if move is None:
@@ -43,6 +47,7 @@ class LegalMoveBasedStrategy(Strategy):
       for move in moves)
 
     honors = [self.card_dictionary.find_card(move.card_name).honor
+        if move.card_name != "Cultist" else 0.5  # dissuade us from killing the cultist
       for move in moves]
 
     return moves[argmax(honors)]

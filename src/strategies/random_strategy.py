@@ -15,7 +15,7 @@ class RandomStrategy(LegalMoveBasedStrategy):
   def __init__(self, player_index, num_players, card_dictionary):
     super(RandomStrategy, self).__init__(TAG, player_index, num_players, card_dictionary)
 
-  def _choose_move(self, board, legal_move):
+  def _choose_move(self, board, legal_moves):
     return random.choice(legal_moves)
 
   def choose_construct_for_discard(self, board):

@@ -11,6 +11,7 @@ from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
 from src.strategies.random_strategy import RandomStrategy
 from src.strategies.greedy_strategy import GreedyStrategy
 from src.strategies.power_strategy import PowerStrategy
+from src.strategies.lifebound_strategy import LifeboundStrategy
 
 # Let the number of strategies be N. This will run N^2 * GAMES_PER_PAIR games.
 GAMES_PER_PAIR = 64
@@ -19,6 +20,7 @@ STRATEGY_TYPES = [
   BasicStrategy,
   RandomStrategy,
   GreedyStrategy,
+  LifeboundStrategy,
   PowerStrategy,
 ]
 
