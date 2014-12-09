@@ -2,7 +2,7 @@
 
 import logging
 from src import game, log
-from src.card_decoder.decoder import CardDecoder
+from src.card_decoder.decoder import get_dict
 from src.strategies.basic_strategy import BasicStrategy
 from src.strategies.user_strategy.user_strategy import UserStrategy
 from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
@@ -20,7 +20,7 @@ def main():
   log_level = logging.INFO if VERBOSE else logging.ERROR
   log.initialize_logging(log_level)
 
-  card_dictionary = CardDecoder().decode_cards()
+  card_dictionary = get_dict()
 
   strategies = [
     # BasicStrategy(0, NUM_PLAYERS, card_dictionary),  # player index 0
@@ -41,7 +41,7 @@ def main():
       # UserStrategy2(0, NUM_PLAYERS, card_dictionary),
       # UserStrategy2(1, NUM_PLAYERS, card_dictionary),
 
-      PowerStrategy(0, NUM_PLAYERS, card_dictionary),
+      UserStrategy2(0, NUM_PLAYERS, card_dictionary),
       # PowerStrategy(1, NUM_PLAYERS, card_dictionary),
 
       # LifeboundStrategy(0, NUM_PLAYERS, card_dictionary),

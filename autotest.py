@@ -5,7 +5,7 @@ import time
 import logging
 import src.game as game
 from src import game, log
-from src.card_decoder.decoder import CardDecoder
+from src.card_decoder.decoder import get_dict
 from src.strategies.basic_strategy import BasicStrategy
 from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
 from src.strategies.random_strategy import RandomStrategy
@@ -70,7 +70,7 @@ def generate_matrix(seed = None):
   if seed is None:
     seed = int(time.time())
 
-  card_dictionary = CardDecoder().decode_cards()
+  card_dictionary = get_dict()
   matrix = {}
 
   for i in xrange(len(STRATEGY_TYPES)):

@@ -34,6 +34,7 @@
 from effects import apply_simple_effect
 from card_decoder.effects import SimpleEffect
 from events import raise_strategy_card_events, raise_strategy_card_events_for_player
+from card_decoder.decoder import get_dict, get_effects
 
 class Move(object):
   def __init__(self, move_type, card_name, targets):
@@ -46,7 +47,21 @@ class Move(object):
     self.targets = targets
 
   def __str__(self):
-    return "%s %s (targets=%s)" % (self.move_type, self.card_name, self.targets)
+    def effect_str(effect_index, target):
+      card = get_dict().find_card(self.card_name)
+      effects = get_effects()
+
+      effect_str = effects[effect_index] % card.get_effect_param(effect_index)
+      target_str = " -> %s" % str(target) if target != () else ""
+      return "%s%s" % (effect_str, target_str)
+
+    if self.targets is not None:
+      target_str = '\n\t' + '\n\t'.join(effect_str(key, self.targets[key])
+        for key in self.targets.keys())
+    else:
+      target_str = ''
+
+    return "%s %s%s" % (self.move_type, self.card_name, target_str)
 
   def apply_to_board(self, board, should_add_to_moves=True):
     if should_add_to_moves:

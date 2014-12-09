@@ -163,13 +163,11 @@ class Card(object):
 
   def _cost_str(self):
     cost_type = ' runes' if self.cost_str[1] == 'R' else ' power'
-    return str(self.cost_str) + cost_type
+    return 'Cost: ' + str(self.cost_str[0]) + cost_type
 
   def __str__(self):
-    effect_str = '\n\t' + '\n\t'.join(str(effect) for effect in self.effects)
-
     title_str = self._title_str()
-    return title_str + effect_str
+    return '%s\n\t%s' % (title_str, str(self.effect))
 
 
 # Constructs and Heros. These params are in the order that they appear

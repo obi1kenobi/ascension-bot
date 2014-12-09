@@ -21,7 +21,36 @@ def read_card_counts():
   return files.read_kvp_file('input/counts.txt', int)
 
 
+decoder = None
+
+def get_decoder():
+  global decoder
+  if decoder is None:
+    CardDecoder()
+
+  return decoder
+
+def get_effects():
+  global decoder
+  if decoder is None:
+    CardDecoder()
+
+  return decoder.effects
+
+def get_dict():
+  global decoder
+  if decoder is None:
+    CardDecoder()
+
+  return decoder.card_dict
+
 class CardDecoder(object):
+  def __init__(self):
+    global decoder
+    assert decoder is None
+    decoder = self
+    self.card_dict = self.decode_cards()
+
   def decode_cards(self):
     # We pad with an empty string because the effect indices are one-indexed
     self.effects = [''] + files.read_lines('input/effects.txt')
