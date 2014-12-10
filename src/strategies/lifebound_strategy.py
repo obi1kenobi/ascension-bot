@@ -6,7 +6,7 @@
 from evaluating_strategy import EvaluatingStrategy
 
 TAG = "lifebound"
-CONFIG_PATH = "input/strategies/lifebound.txt"
+CONFIG_PATH = "strategies/lifebound.txt"
 
 # TODO(ddoucet): this should be configurable in file
 OPTIMAL_DECK_RUNES = 12

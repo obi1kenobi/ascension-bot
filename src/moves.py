@@ -51,7 +51,11 @@ class Move(object):
       card = get_dict().find_card(self.card_name)
       effects = get_effects()
 
-      effect_str = effects[effect_index] % card.get_effect_param(effect_index)
+      effect_param = card.get_effect_param(effect_index)
+      if effect_param is not None:
+        effect_str = effects[effect_index] % card.get_effect_param(effect_index)
+      else:
+        effect_str = effects[effect_index]
       target_str = " -> %s" % str(target) if target != () else ""
       return "%s%s" % (effect_str, target_str)
 

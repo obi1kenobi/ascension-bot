@@ -18,7 +18,7 @@ from effects import SimpleEffect, CompoundEffect
   Returns a dictionary of card name to count
 """
 def read_card_counts():
-  return files.read_kvp_file('input/counts.txt', int)
+  return files.read_kvp_file('counts.txt', int)
 
 
 decoder = None
@@ -53,11 +53,11 @@ class CardDecoder(object):
 
   def decode_cards(self):
     # We pad with an empty string because the effect indices are one-indexed
-    self.effects = [''] + files.read_lines('input/effects.txt')
+    self.effects = [''] + files.read_lines('effects.txt')
     return CardDictionary(self._decode_acquirables() + self._decode_defeatables())
 
   def _decode_acquirables(self):
-    rows = files.parse_csv_file('input/acquirable.csv')
+    rows = files.parse_csv_file('acquirable.csv')
     return [self._row_to_acquirable(row) for row in rows]
 
   def _row_to_acquirable(self, row):
@@ -68,7 +68,7 @@ class CardDecoder(object):
     return Acquirable(name, cost, honor, card_type, single)
 
   def _decode_defeatables(self):
-    rows = files.parse_csv_file('input/defeatable.csv')
+    rows = files.parse_csv_file('defeatable.csv')
     return [self._row_to_defeatable(row) for row in rows]
 
   def _row_to_defeatable(self, row):

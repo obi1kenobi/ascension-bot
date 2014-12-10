@@ -1,5 +1,5 @@
 import files
-from decoder import CardDecoder, read_card_counts
+from decoder import get_dict, read_card_counts
 from cards import Card, Acquirable, Defeatable
 from effects import SimpleEffect, CompoundEffect
 
@@ -38,7 +38,7 @@ def test_effects_not_reodered():
   ]
 
   effects = files.read_lines('input/effects.txt')
-  fail_message = """It looks like input/effects.txt has been changed.
+  fail_message = """It looks like effects.txt has been changed.
 If it was just a minor change (rewording a description), just change it in this test.
 Be careful about reordering effects, though, because we reference effects by indices
 so you'll probably break a lot of things."""
@@ -95,7 +95,7 @@ def test_various_cards():
     ]))
   ]
 
-  card_dictionary = CardDecoder().decode_cards()
+  card_dictionary = get_dict()
   assert len(card_dictionary.cards) == NUM_CARDS
 
   for card in SELECTED_CARDS:
