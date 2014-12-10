@@ -22,9 +22,11 @@ def read_card_counts():
 
 
 class CardDecoder(object):
-  def decode_cards(self):
+  def __init__(self):
     # We pad with an empty string because the effect indices are one-indexed
     self.effects = [''] + files.read_lines('input/effects.txt')
+
+  def decode_cards(self):
     return CardDictionary(self._decode_acquirables() + self._decode_defeatables())
 
   def _decode_acquirables(self):
