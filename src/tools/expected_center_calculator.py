@@ -93,6 +93,30 @@ def calculate_expected_center(center_cards):
   print "    expected honor / power:      %.03f" % expected_honor_per_power
   print ""
 
+
+def calculate_expected_draws(center_cards):
+  total_draw_cards_effect = 34.0
+  total_draw_cards = 26.0
+  total_cards = len(center_cards)
+
+  normalize_to_cycle_length = 2.5
+  cards_per_hand = 5.0
+  effect_per_unit = (normalize_to_cycle_length * cards_per_hand + 1) / \
+                    (normalize_to_cycle_length * cards_per_hand)
+
+  expected_draw_card_per_bought_card = (total_draw_cards_effect / total_draw_cards) / total_cards
+
+  expected_effect_per_bought_card = expected_draw_card_per_bought_card * effect_per_unit
+
+  print "**************************************************"
+  print "Expected draw-card effects:"
+  print ""
+  print "  expected draw-card effect:     %.03f" % expected_draw_card_per_bought_card
+  print "  effect per unit draw-card:     %.03f" % effect_per_unit
+  print "  expected effect per card:      %.03f" % expected_effect_per_bought_card
+  print ""
+
+
 def main():
   cards = []
   acquirables = get_acquirables()
@@ -101,6 +125,7 @@ def main():
   cards.extend(monsters)
 
   calculate_expected_center(cards)
+  calculate_expected_draws(cards)
 
 if __name__ == "__main__":
   main()
