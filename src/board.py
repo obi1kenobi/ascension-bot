@@ -82,9 +82,7 @@ class Board(object):
     self.moves_played_this_turn = []
 
     if not self.current_player().should_take_additional_turn:
-      self.current_player_index = (self.current_player_index + 1) % len(self.players)
-      if self.current_player_index == 0:
-        self.end_round()
+      self.current_player_index += 1
     else:
       self.current_player().should_take_additional_turn = False
 

@@ -16,6 +16,9 @@ def play_game(strategies):
       last_moves = board.moves_played_this_turn
       board.end_turn()
 
+    board.current_player_index = 0
+    board.end_round()
+
   board.compute_victor()
   print "Rounds:", board.rounds
 
