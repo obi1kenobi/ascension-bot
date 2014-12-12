@@ -108,6 +108,8 @@ class UserStrategy(Strategy):
 
   def choose_construct_for_discard(self, board):
     constructs = board.players[self.player_index].constructs
+    print "\n".join([("[%d] " % i) + card.name for card in constructs])
+
     return constructs[
-      self._request_index("Choose a construct to discard ", len(constructs))]
+      self._request_index("Choose a construct to discard ", len(constructs))].name
 
