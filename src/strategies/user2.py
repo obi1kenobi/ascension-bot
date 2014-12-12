@@ -40,8 +40,8 @@ class UserStrategy(Strategy):
     move_type_order = ["play", "activate", "acquire", "defeat"]
     return sorted(moves,
       lambda a,b:
-        cmp(move_type_order.index(a.move_type),
-            move_type_order.index(b.move_type)))
+        cmp((move_type_order.index(a.move_type), a.card_name),
+            (move_type_order.index(b.move_type), b.card_name)))
 
   # max_value is exclusive
   def _request_index(self, prompt, max_value):

@@ -52,11 +52,14 @@ def main():
       # MechanaStrategy(1, NUM_PLAYERS, card_dictionary),
   ]
 
-  victor = game.play_game(strategies).victor
+  board = game.play_game(strategies)
+  victor = board.victor
   if victor == "tie":
     print "Players tied"
   else:
     print "Player %s won" % victor
+
+  print "Honor counts:", [player.compute_honor() for player in board.players]
 
 if __name__ == "__main__":
   main()
