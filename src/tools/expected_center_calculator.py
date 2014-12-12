@@ -171,7 +171,7 @@ def calculate_expected_honor_per_turn(center_cards):
   # expected_honor_per_hand = total_honor_with_all_cards / total_cards * cards_per_hand
 
   print "**************************************************"
-  print "Expected draw-card effects:"
+  print "Expected honor-per-turn effects:"
   print ""
   print "  expected honor per card:       %.06f" % expected_honor_per_card
   #print "  expected honor per turn:       %.06f" % expected_honor_per_hand
