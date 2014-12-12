@@ -12,16 +12,18 @@ from src.strategies.random_strategy import RandomStrategy
 from src.strategies.greedy_strategy import GreedyStrategy
 from src.strategies.power_strategy import PowerStrategy
 from src.strategies.lifebound_strategy import LifeboundStrategy
+from src.strategies.mechana_strategy import MechanaStrategy
 
 # Let the number of strategies be N. This will run N^2 * GAMES_PER_PAIR games.
-GAMES_PER_PAIR = 64
+GAMES_PER_PAIR = 1000
 
 STRATEGY_TYPES = [
-  BasicStrategy,
-  RandomStrategy,
-  GreedyStrategy,
+  # BasicStrategy,
+  # RandomStrategy,
+  # GreedyStrategy,
   LifeboundStrategy,
   PowerStrategy,
+  MechanaStrategy,
 ]
 
 NUM_PLAYERS = 2
@@ -106,7 +108,7 @@ if __name__ == "__main__":
   print "\tfraction when losing, average fraction overall)"
   print
 
-  card_dictionary = CardDecoder().decode_cards()
+  card_dictionary = get_dict()
 
   # Print column headings
   print (COLUMN_WIDTH - 5) * ' ',

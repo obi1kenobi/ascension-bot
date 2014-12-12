@@ -11,6 +11,7 @@ from src.strategies.greedy_strategy import GreedyStrategy
 from src.strategies.user2 import UserStrategy as UserStrategy2
 from src.strategies.power_strategy import PowerStrategy
 from src.strategies.lifebound_strategy import LifeboundStrategy
+from src.strategies.mechana_strategy import MechanaStrategy
 
 VERBOSE = True
 
@@ -41,11 +42,14 @@ def main():
       # UserStrategy2(0, NUM_PLAYERS, card_dictionary),
       # UserStrategy2(1, NUM_PLAYERS, card_dictionary),
 
-      UserStrategy2(0, NUM_PLAYERS, card_dictionary),
+      # UserStrategy2(0, NUM_PLAYERS, card_dictionary),
       # PowerStrategy(1, NUM_PLAYERS, card_dictionary),
 
       # LifeboundStrategy(0, NUM_PLAYERS, card_dictionary),
       LifeboundStrategy(1, NUM_PLAYERS, card_dictionary),
+
+      MechanaStrategy(0, NUM_PLAYERS, card_dictionary),
+      # MechanaStrategy(1, NUM_PLAYERS, card_dictionary),
   ]
 
   victor = game.play_game(strategies).victor
