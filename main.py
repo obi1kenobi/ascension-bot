@@ -42,13 +42,13 @@ def main():
       # UserStrategy2(0, NUM_PLAYERS, card_dictionary),
       # UserStrategy2(1, NUM_PLAYERS, card_dictionary),
 
-      # UserStrategy2(0, NUM_PLAYERS, card_dictionary),
-      # PowerStrategy(1, NUM_PLAYERS, card_dictionary),
+      UserStrategy2(0, NUM_PLAYERS, card_dictionary),
+      PowerStrategy(1, NUM_PLAYERS, card_dictionary),
 
       # LifeboundStrategy(0, NUM_PLAYERS, card_dictionary),
-      LifeboundStrategy(1, NUM_PLAYERS, card_dictionary),
+      # LifeboundStrategy(1, NUM_PLAYERS, card_dictionary),
 
-      MechanaStrategy(0, NUM_PLAYERS, card_dictionary),
+      # MechanaStrategy(0, NUM_PLAYERS, card_dictionary),
       # MechanaStrategy(1, NUM_PLAYERS, card_dictionary),
   ]
 
