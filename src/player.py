@@ -115,8 +115,21 @@ class Player(object):
     # Similar to why we don't play cards into the discard (see below)
     self.acquired_cards.append(card)
 
+  def can_acquire_card(self, card):
+    rune_cost = card.cost
+
+    if self.considers_card_mechana_construct(card):
+      rune_cost -= self.runes_toward_mechana_constructs
+
+    if card.is_construct():
+      rune_cost -= self.runes_toward_constructs
+
+    return self.runes_remaining >= rune_cost
+
   # Raises an exception if there aren't enough runes and credits to pay for it
   def pay_for_acquired_card(self, card):
+    assert self.can_acquire_card(card)
+
     cost = card.cost
 
     if self.considers_card_mechana_construct(card):

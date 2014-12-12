@@ -20,7 +20,7 @@ def _generate_acquires(board):
     card_names.append("Heavy Infantry")
 
   for card in board.center:
-    if not card.is_monster() and card.cost <= runes:
+    if not card.is_monster() and board.current_player().can_acquire_card(card):
       card_names.append(card.name)
 
   return [Move("acquire", card_name, None) for card_name in card_names]
