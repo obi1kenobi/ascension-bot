@@ -11,8 +11,8 @@ def play_game(strategies):
   while not board.game_over:
     # Give each strategy a chance to make a move before checking for game over
     # again.
-    for strategy in strategies:
-      strategy.play_turn(board, last_moves)
+    while board.current_player_index < len(strategies):
+      strategies[board.current_player_index].play_turn(board, last_moves)
       last_moves = board.moves_played_this_turn
       board.end_turn()
 
