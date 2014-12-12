@@ -5,23 +5,25 @@ import time
 import logging
 import src.game as game
 from src import game, log
-from src.card_decoder.decoder import CardDecoder
+from src.card_decoder.decoder import get_dict
 from src.strategies.basic_strategy import BasicStrategy
 from src.strategies.toy.basic_estimating_strategy import BasicEstimatingStrategy
 from src.strategies.random_strategy import RandomStrategy
 from src.strategies.greedy_strategy import GreedyStrategy
 from src.strategies.power_strategy import PowerStrategy
 from src.strategies.lifebound_strategy import LifeboundStrategy
+from src.strategies.mechana_strategy import MechanaStrategy
 
 # Let the number of strategies be N. This will run N^2 * GAMES_PER_PAIR games.
-GAMES_PER_PAIR = 64
+GAMES_PER_PAIR = 1000
 
 STRATEGY_TYPES = [
-  BasicStrategy,
-  RandomStrategy,
-  GreedyStrategy,
+  # BasicStrategy,
+  # RandomStrategy,
+  # GreedyStrategy,
   LifeboundStrategy,
   PowerStrategy,
+  MechanaStrategy,
 ]
 
 NUM_PLAYERS = 2
@@ -70,7 +72,7 @@ def generate_matrix(seed = None):
   if seed is None:
     seed = int(time.time())
 
-  card_dictionary = CardDecoder().decode_cards()
+  card_dictionary = get_dict()
   matrix = {}
 
   for i in xrange(len(STRATEGY_TYPES)):
@@ -106,7 +108,7 @@ if __name__ == "__main__":
   print "\tfraction when losing, average fraction overall)"
   print
 
-  card_dictionary = CardDecoder().decode_cards()
+  card_dictionary = get_dict()
 
   # Print column headings
   print (COLUMN_WIDTH - 5) * ' ',

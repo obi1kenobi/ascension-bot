@@ -16,12 +16,12 @@ Landtalker:3.4
 Demon Slayer:3.3
 Arha Templar:3.1
 Runic Lycanthrope:3.0
+Mystic:2.9
 Spike Vixen:2.8
 Lifebound Initiate:2.7
 Wolf Shaman:2.5
 Avatar Golem:2.1
 Druids of the Stone Circle:2.0
 Reactor Monk:1.5
-Mystic:1.0
 Heavy Infantry:0.8
 Kor, the Ferromancer:0.7

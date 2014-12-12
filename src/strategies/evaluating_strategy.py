@@ -101,3 +101,9 @@ class EvaluatingStrategy(LegalMoveBasedStrategy):
     return None if banish_value(BANISH_FROM_HAND, best_banish_from_hand) > threshold \
       else best_banish_from_hand
 
+  def choose_construct_for_discard(self, board):
+    constructs = board.players[self.player_index].constructs
+    worst_index = argmin([self._card_name_to_value(card.name) for card in constructs])
+
+    return constructs[worst_index].name
+

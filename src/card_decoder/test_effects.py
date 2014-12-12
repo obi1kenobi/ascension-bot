@@ -6,8 +6,8 @@ import pytest
 
 @pytest.fixture(scope="module")
 def card_dictionary():
-  from decoder import CardDecoder
-  return CardDecoder().decode_cards()
+  from decoder import get_dict
+  return get_dict()
 
 def assert_correct_effect((expected_index, expected_param), effect):
   assert expected_index == effect.effect_index, "Expected index %d, got %d" % (

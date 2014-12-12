@@ -144,11 +144,11 @@ class Player(object):
     card = self.remove_card_from_hand(card_name)
     if card.is_construct():
       self.constructs.append(card)
+      self.played_constructs.append(card)
 
       raise_strategy_card_events(self.board, 'construct_placed', card_name)
     else:
       self.played_cards.append(card)
-      self.played_constructs.append(card)
 
   def can_activate_construct(self, card_name):
     count_of_construct = sum(1 for card in self.constructs

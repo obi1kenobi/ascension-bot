@@ -1,4 +1,4 @@
-from card_decoder.decoder import CardDecoder
+from card_decoder.decoder import get_dict
 from deck import Deck
 from player import Player
 from src.events import raise_end_round_events
@@ -28,7 +28,7 @@ class Board(object):
     self.heavy = Board.NUM_HEAVY
     self.cultist = 1
 
-    self.card_dictionary = CardDecoder().decode_cards()
+    self.card_dictionary = get_dict()
 
     self.deck = Deck.create_center_deck(self.card_dictionary)
     self.center = [self.deck.get_next_card() for i in xrange(Board.CENTER_SIZE)]
@@ -79,6 +79,7 @@ class Board(object):
 
   def end_turn(self):
     self.current_player().end_turn()
+    self.moves_played_this_turn = []
 
     if not self.current_player().should_take_additional_turn:
       self.current_player_index = (self.current_player_index + 1) % len(self.players)

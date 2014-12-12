@@ -1,0 +1,25 @@
+Hedron Cannon:10.0
+Hedron Link Device:9.5
+The Grand Design:9.0
+Watchmaker's Altar:8.5
+Muramasa:8.2
+Rocket Courier X-99:8.0
+Burrower Mark II:7.5
+Voidthirster:6.5
+The All-Seeing Eye:6.0
+Oziah the Peerless:5.5
+Emri, One with the Void:5.2
+Shadow Star:5.1
+Avatar Golem:5.0
+Reactor Monk:4.5
+Kor, the Ferromancer:4.0
+Void Initiate:3.7
+Shade of the Black Watch:3.6
+Mystic:3.5
+Yggdrasil Staff:3.0
+Snapdragon:3.0
+Flytrap Witch:2.7
+Ascetic of the Lidless Eye:2.5
+Arha Templar:2.5
+Twofold Askara:2.5
+Tablet of Time's Dawn:2.5

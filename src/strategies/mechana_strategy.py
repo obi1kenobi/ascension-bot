@@ -1,20 +1,19 @@
 """
-  Strategy that revolves around deck control and drawing lifebound cards over
-  and over again to gain honor from them (e.g. Flytrap Witch and Lifebound Initiate).
+  Strategy that revolves around 
 """
 
 from evaluating_strategy import EvaluatingStrategy
 
-TAG = "lifebound"
-CONFIG_PATH = "strategies/lifebound.txt"
+TAG = "mechana"
+CONFIG_PATH = "strategies/mechana.txt"
 
 # TODO(ddoucet): this should be configurable in file
-OPTIMAL_DECK_RUNES = 12
-OPTIMAL_DECK_POWER = 7
+OPTIMAL_DECK_RUNES = 18
+OPTIMAL_DECK_POWER = 0
 
-class LifeboundStrategy(EvaluatingStrategy):
+class MechanaStrategy(EvaluatingStrategy):
   def __init__(self, player_index, num_players, card_dictionary):
-    return super(LifeboundStrategy, self).__init__(
+    return super(MechanaStrategy, self).__init__(
       TAG, player_index, num_players, card_dictionary, CONFIG_PATH,
       OPTIMAL_DECK_RUNES, OPTIMAL_DECK_POWER)
 
@@ -34,17 +33,10 @@ class LifeboundStrategy(EvaluatingStrategy):
         BANISH_FROM_HAND not in move.targets and \
         BANISH_FROM_DISCARD not in move.targets))]
 
-    # Play Druids of the Stone Circle first if we have that.
-    druids = [move for move in plays if move.card_name == "Druids of the Stone Circle"]
-    if len(druids) > 0:
-      DRUID_EFFECT = 11
-
-      return self._target_of_most_value(board, druids, DRUID_EFFECT)
-
     # Play any cards that aren't ones we want to play last.
     # Runic Lycanthrope gives us power for having played a Lifebound hero, so we
     # want to play it last (to give us a better chance of having played one). 
-    ending_cards = ["Runic Lycanthrope", "Twofold Askara"]
+    ending_cards = ["Twofold Askara"]
 
     plays_without_ending = [move for move in plays if move.card_name not in ending_cards]
     if len(plays_without_ending) > 0:
@@ -52,10 +44,6 @@ class LifeboundStrategy(EvaluatingStrategy):
       # not things we like :P
       # same with discard
       return plays_without_ending[0]
-
-    runic = [move for move in plays if move.card_name == "Runic Lycanthrope"]
-    if len(runic) > 0:
-      return runic[0]
 
     twofold = [move for move in plays if move.card_name == "Twofold Askara"]
 
@@ -74,8 +62,12 @@ class LifeboundStrategy(EvaluatingStrategy):
     # Better to do that after it's all working, though, I think.
 
     # Activate any constructs that aren't the Yggdrasil Staff (runes -> honor).
+    # We only activate the Tablet of Time's Dawn if we have at least 6 constructs.
+    # This is a reasonable heuristic for when we'll likely have a strong turn.
+    num_constructs = len(board.current_player().constructs)
     activates = [move for move in legal_moves
-      if move.move_type == "activate" and move.card_name != "Yggdrasil Staff"]
+      if move.move_type == "activate" and move.card_name != "Yggdrasil Staff" and \
+        (move.card_name != "Tablet of Time's Dawn" or num_constructs >= 6)]
     if len(activates) > 0:
       return activates[0]
 
@@ -90,7 +82,7 @@ class LifeboundStrategy(EvaluatingStrategy):
     can_activate_yggdrasil = any(move.move_type == "activate" and \
         move.card_name == "Yggdrasil Staff"
       for move in legal_moves)
-    acquire_threshold = 3.0 if can_activate_yggdrasil else 0.1
+    acquire_threshold = 3.1 if can_activate_yggdrasil else 0.1
 
     acquire = self._acquire_of_most_value(board, legal_moves, acquire_threshold)
     if acquire is not None:
