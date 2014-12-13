@@ -15,3 +15,6 @@ hs_err_pid*
 *.pyc
 __pycache__/
 logs/
+
+# sublime temporary files
+*.tmp
