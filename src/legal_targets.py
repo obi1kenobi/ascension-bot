@@ -116,7 +116,7 @@ def _generate_legal_copy_hero(board, current_card, param):
     if card.is_hero() and card != current_card]
 
 def _generate_legal_acquire_or_defeat_anything(board, current_card, param):
-  ret = [("Cultist",)]
+  ret = []
   if board.mystics > 0:
     ret.append(("Mystic",))
   if board.heavy > 0:
