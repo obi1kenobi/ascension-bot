@@ -151,7 +151,7 @@ def _acquire_hero(board, param, my_targets, all_targets):
     " (%s costs %d runes)" % (param, card.name, card.cost))
 
   board.remove_card_from_center(card.name)
-  board.current_player().deck.cards.insert(0, card)
+  board.current_player().deck.cards.append(card)
   raise_strategy_card_events(board, 'acquired_card', card_name)
 
 def _gain_honor_for_lifebound_hero(board, param, my_targets, all_targets):
